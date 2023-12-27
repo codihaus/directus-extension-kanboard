@@ -1,11 +1,11 @@
-# @codihaus/directus-extension-kanboard
+# directus-extension-kanboard
  Kanboard Layout Extension for Directus: customize your Kanban boards.
 
  # Installation via npm
 
 Run the command at your Directus root project level
 
-- npm i @codihaus/directus-extension-kanboard
+- npm i directus-extension-kanboard
 
 # Installation by compiling
 
