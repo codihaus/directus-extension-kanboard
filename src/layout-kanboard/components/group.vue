@@ -282,7 +282,7 @@ main {
 .menu-edit {
     position: absolute;
     top: 30px;
-    right: 17px;
+    right: 25px;
     background-color: #fff;
     list-style-type: none;
     z-index: 10;
