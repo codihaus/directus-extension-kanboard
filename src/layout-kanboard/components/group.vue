@@ -3,6 +3,7 @@
         <header>
             <div class="w-55% flex gap-5px items-center">
                 <!-- <component :is="`display-${field?.meta?.display}`" v-bind="field?.meta?.display_options" :type="field?.type" :value="fieldValue" /> -->
+                <span>{{ groupIndex + 1 }}</span>
                 <div v-if="!valueOpenEditGroupTitle" class="cursor-pointer capitalize" @click="valueOpenEditGroupTitle = true">{{ groupTitle }}</div>
                 <div v-if="valueOpenEditGroupTitle" class="edit-title-group flex items-center">
                     <v-input v-model="valueGroupTitle"/>
@@ -80,6 +81,7 @@ interface Props {
 	groupCollection?: string | null;
 	groupedItems?: Group[];
 	groupTitle?: string | null;
+    groupIndex?: number | null;
 	changeGroupSort: (event: ChangeEvent<Group>) => void;
 	addGroup: (title: string) => Promise<void>;
 	editGroup: (id: string | number, title: string) => Promise<void>;

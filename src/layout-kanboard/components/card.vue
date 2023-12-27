@@ -34,7 +34,6 @@ import { ref } from "vue";
 import { useApi } from '@directus/extensions-sdk';
 import { partImage } from '../../share/utils/part-image'
 import { notify } from '../../share/utils/notify';
-import { useRevisions } from '@/composables/use-revisions';
 interface Props {
 	layoutOptions?: LayoutOptions;
     primaryKeyField?: Record<string, any> | null;

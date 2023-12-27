@@ -1,5 +1,6 @@
 <template>
 	<div class="kanboard">
+		
 		<draggable
 			:model-value="groupedItems"
 			group="groups"
@@ -10,10 +11,11 @@
 			:class="{ sortable: groupsSortField !== null }"
 			@change="changeGroupSort"
 		>
-			<template #item="{ element: group }">
+			<template #item="{ element: group, index: index }">
 				<group
 					:key="group.title"
 					:group-title="group.title"
+					:group-index="index"
 					:field="field"
 					:field-value="group.id"
 					:collection="collectionKey"
