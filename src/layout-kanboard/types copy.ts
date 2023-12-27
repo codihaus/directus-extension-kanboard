@@ -11,13 +11,6 @@ export type LayoutOptions = {
 	imageSource?: string;
 	crop: boolean;
 	showUngrouped: boolean;
-	enableInfiniteScroll: boolean;
-
-    groupByField?: string;
-    iconTemplate?: string;
-    headerTemplate?: string;
-    cardContentTemplate?: string;
-    sort?: string[];
 };
 
 export type LayoutQuery = {
@@ -62,7 +55,3 @@ export type ChangeEvent<T> = {
 		oldIndex: number;
 	};
 };
-
-export type LayoutQuery = Record<string, never>;
-
-

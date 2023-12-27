@@ -13,45 +13,52 @@
         </v-list>
     </v-menu>
 </template>
-  
-<script lang="ts">
-import { computed, defineComponent, PropType, toRefs } from "vue";
+<script setup lang="ts">
+import { computed, defineComponent, PropType, toRefs, defineOptions } from "vue";
 import { useCollection, useSync } from "@directus/extensions-sdk";
 import { Field } from "@directus/types";
 import { LayoutOptions } from "./types";
-export default defineComponent({
-    inheritAttrs: false,
-    props: {
-        layoutOptions: { type: Object as PropType<LayoutOptions>, required: false },
-        collection: { type: String, required: true },
+
+
+defineOptions({ inheritAttrs: false });
+
+const emit = defineEmits(['update:layoutOptions'])
+
+interface Props {
+	layoutOptions?: LayoutOptions;
+	collection: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	layoutOptions: () => ({}),
+	collection: null,
+	filter: null,
+	search: null
+});
+
+const { collection: collectionKey } = toRefs(props);
+const collection = useCollection(collectionKey);
+
+const layoutOptions = useSync(props, "layoutOptions", emit);
+const sortWritable = computed({
+    get() {
+        return layoutOptions.value?.sort;
     },
-    setup(props, { emit }) {
-        const { collection: collectionKey } = toRefs(props);
-        const collection = useCollection(collectionKey);
-
-        const layoutOptions = useSync(props, "layoutOptions", emit);
-        const sortWritable = computed({
-            get() {
-                return layoutOptions.value?.sort;
-            },
-            set(newValue) {
-                layoutOptions.value = Object.assign({}, layoutOptions.value, {
-                    sort: newValue,
-                });
-            },
+    set(newValue) {
+        layoutOptions.value = Object.assign({}, layoutOptions.value, {
+            sort: newValue,
         });
-
-        const sortKey = computed(() =>
-            sortWritable.value ? sortWritable.value["0"] : null
-        );
-
-        const fields = computed<Record<string, Field>>(() =>
-            Object.fromEntries(collection.fields.value.map((f) => [f.field, f]))
-        );
-
-        return { fields, sortWritable, sortKey };
     },
 });
+
+const sortKey = computed(() =>
+    sortWritable.value ? sortWritable.value["0"] : null
+);
+
+const fields = computed<Record<string, Field>>(() =>
+    Object.fromEntries(collection.fields.value.map((f) => [f.field, f]))
+);
+
 </script>
   
 <style>

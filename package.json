@@ -1,73 +1,75 @@
 {
-	"name": "directus-extension-kanboard",
-	"version": "1.0.0",
-	"type": "module",
-	"directus:extension": {
-		"host": "^10.1.9",
-		"type": "bundle",
-		"path": {
-			"app": "dist/app.js",
-			"api": "dist/api.js"
-		},
-		"entries": [
-			{
-				"type": "layout",
-				"name": "layout-kanboard",
-				"source": "src/layout-kanboard/index.ts"
-			}
-		]
-	},
-	"author": "CodiHaus",
-	"description": "Directus Extension show advanced kanboard",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/codihaus/directus-extension-kanboard"
-	},
-	"icon": "extension",
-	"keywords": [
-		"directus",
-		"directus-extension",
-		"directus-custom-bundle"
-	],
-	"scripts": {
-		"build": "NODE_ENV=production vite build",
-		"dev": "pnpm --filter @directus/app dev",
-		"link": "directus-extension link",
-		"setup-directus": "degit directus/directus/app#v10.8.2 directus && pnpm --filter @directus/app install",
-		"link-extension-directus": "tsx scripts/link.ts",
-		"setup-dev": "pnpm setup-directus && pnpm link-extension-directus",
-		"release": "npm publish --tag=latest",
-		"add": "directus-extension add"
-	},
-	"devDependencies": {
-		"@directus/composables": "^10.1.6",
-		"@directus/constants": "^10.2.3",
-		"@directus/exceptions": "^10.0.3",
-		"@directus/extensions": "^0.2.0",
-		"@directus/extensions-sdk": "10.1.9",
-		"@directus/format-title": "^10.1.0",
-		"@directus/types": "^10.1.6",
-		"@directus/utils": "^10.0.11",
-		"@types/lodash": "^4.14.202",
-		"@vitejs/plugin-vue": "^4.5.1",
-		"@vueuse/core": "^10.7.0",
-		"@wordpress/i18n": "^4.47.0",
-		"degit": "^2.8.4",
-		"dotenv": "^16.3.1",
-		"esno": "^0.17.0",
-		"fs-extra": "^11.2.0",
-		"lodash": "^4.17.21",
-		"pinia": "^2.1.7",
-		"sass": "^1.69.5",
-		"tsx": "^3.14.0",
-		"typescript": "^5.3.3",
-		"unocss": "^0.55.7",
-		"vite": "^4.5.1",
-		"vite-plugin-css-injected-by-js": "^3.3.0",
-		"vite-plugin-replace": "^0.1.1",
-		"vue": "^3.3.10",
-		"vue-i18n": "^9.8.0",
-		"vue-tsc": "^1.8.25",
-		"vuedraggable": "4.1.0"
-	}
+  "name": "@codihaus/directus-extension-kanboard",
+  "version": "0.0.1",
+  "type": "module",
+  "directus:extension": {
+    "host": "^10.1.9",
+    "type": "bundle",
+    "path": {
+      "app": "dist/app.js",
+      "api": "dist/api.js"
+    },
+    "entries": [
+      {
+        "type": "layout",
+        "name": "layout-kanboard",
+        "source": "src/layout-kanboard/index.ts"
+      }
+    ]
+  },
+  "author": "CodiHaus",
+  "description": "Kanboard Layout Extension for Directus: customize your Kanban boards.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codihaus/directus-extension-kanboard"
+  },
+  "icon": "extension",
+  "keywords": [
+    "directus",
+    "directus-extension",
+    "directus-custom-bundle"
+  ],
+  "scripts": {
+    "build": "cross-env NODE_ENV=production vite build",
+    "dev": "pnpm --filter @directus/app dev",
+    "install-directus": "pnpm --filter @directus/app install",
+    "link-extensions": "tsx scripts/link.ts",
+    "setup-dev": "pnpm install-directus && pnpm link-extensions",
+    "release": "pnpm run build && pnpm changelogen --release && git push --follow-tags && npm publish --tag=latest",
+    "add": "directus-extension add",
+    "link": "directus-extension link"
+  },
+  "devDependencies": {
+    "@directus/composables": "^10.1.6",
+    "@directus/constants": "^11.0.1",
+    "@directus/exceptions": "^10.0.3",
+    "@directus/extensions": "^0.2.0",
+    "@directus/extensions-sdk": "10.2.0",
+    "@directus/format-title": "^10.1.0",
+    "@directus/types": "^11.0.2",
+    "@directus/utils": "^11.0.2",
+    "@types/lodash": "^4.14.202",
+    "@vitejs/plugin-vue": "^4.5.2",
+    "@vueuse/core": "^10.7.0",
+    "@wordpress/i18n": "^4.48.0",
+    "changelogen": "^0.5.5",
+    "cross-env": "^7.0.3",
+    "degit": "^2.8.4",
+    "dotenv": "^16.3.1",
+    "fs-extra": "^11.2.0",
+    "lodash": "^4.17.21",
+    "nanoid": "^5.0.4",
+    "pinia": "^2.1.7",
+    "sass": "^1.69.5",
+    "tsx": "^4.6.2",
+    "typescript": "^5.3.3",
+    "unocss": "^0.58.0",
+    "vite": "^5.0.10",
+    "vite-plugin-css-injected-by-js": "^3.3.0",
+    "vite-plugin-replace": "^0.1.1",
+    "vue": "^3.3.12",
+    "vue-i18n": "^9.8.0",
+    "vue-tsc": "^1.8.25",
+    "vuedraggable": "4.1.0"
+  }
 }

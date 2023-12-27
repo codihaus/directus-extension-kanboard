@@ -38,14 +38,14 @@ export default defineConfig(({command, mode}) => {
                 external: [
                     'vue',
                     '@directus/extensions-sdk',
-                    // '@directus/composables',
-                    // '@directus/components',
-                    // '@directus/utils',
                     'pinia',
                     'vue-i18n',
                     'vue-router',
                 ],
                 output: {},
+            },
+            commonjsOptions: {
+                esmExternals: true,
             },
         },
         plugins: [

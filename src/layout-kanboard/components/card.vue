@@ -1,0 +1,240 @@
+<template>
+    <section class="card drag-handle">
+        <header>
+            <div v-if="layoutOptions?.iconTemplate" class="card-icon">
+                <render-template
+                    class="card-icon-inner"
+                    :template="layoutOptions.iconTemplate"
+                    :collection="collection" :item="item"
+                />
+            </div>
+            
+            <v-image v-if="item.thumbnail" class="render-thumbnail" :src="partImage(item.thumbnail)" />
+            <render-template
+                v-if="layoutOptions?.headerTemplate"
+                class="card-title"
+                :template="layoutOptions.headerTemplate"
+                :collection="collection"
+                :item="item"
+            />
+            <span v-else class="card-title muted">--</span>
+            <div class="button-edit" @click="handleShowMenuEdit(item)">
+                <v-icon name="edit" />
+            </div>
+            <ul class="menu-edit" :class="{'show-menu-edit': isShowMenuEdit === item.id}">
+                <li @click="handleEditItem">Edit Item</li>
+                <!-- <li>Move</li> -->
+                <li @click="$emit('openChangeLog')">Change log</li>
+                <li>Archive</li>
+                <li @click="handleDeleteItem(item)">Delete</li>
+            </ul>
+            <!-- <pre>{{ item }}</pre> -->
+        </header>
+        <main v-if="layoutOptions?.cardContentTemplate">
+            <render-template
+                :template="layoutOptions.cardContentTemplate"
+                :collection="collection"
+                :item="item"
+            />
+        </main>
+    </section>
+</template>
+
+<script setup lang="ts">
+import { Filter } from "@directus/types";
+import { LayoutOptions } from '../types';
+import { ref } from "vue";
+import { useApi } from '@directus/extensions-sdk';
+import { partImage } from '../../share/utils/part-image'
+import { notify } from '../../share/utils/notify';
+import { useRevisions } from '@/composables/use-revisions';
+interface Props {
+	layoutOptions?: LayoutOptions;
+	collection?: string;
+    collectionKey?: string;
+	filter?: Filter | null;
+	search?: string | null;
+    item: Object | null
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	layoutOptions: {},
+});
+const api = useApi();
+
+const emit = defineEmits([
+    'deleteItem',
+    'editItem',
+    'openChangeLog'
+])
+
+const isShowMenuEdit = ref(null) 
+function handleShowMenuEdit(item: Object) {
+    if(isShowMenuEdit.value !== null) {
+        isShowMenuEdit.value = null
+    }
+    else {
+        isShowMenuEdit.value = item.id
+    }
+}
+async function handleDeleteItem(item: Object) {
+    try {
+        await api.delete(`/items/${props.collectionKey}/${item.id}`);
+        isShowMenuEdit.value = null;
+        emit('deleteItem')
+        notify({
+            title: `Item ${item.title} has been deleted successfully`
+        });
+    } catch (error) {
+        notify({
+            title: error
+        });
+    }
+}
+function handleEditItem() {
+    emit('editItem')
+    isShowMenuEdit.value = null
+}
+</script>
+
+<style scoped>
+.card {
+    display: flex;
+    flex-flow: column nowrap;
+    flex-grow: 1;
+    gap: 8px;
+    align-items: stretch;
+    cursor: pointer;
+}
+
+.card {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 8px;
+    border-radius: 4px;
+    box-shadow: 0px 1px 4px 0px rgba(var(--card-shadow-color), 0.05);
+    background-color: var(--theme--background);
+}
+
+.card>* {
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+.card>*:first-child {
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    padding-top: 16px;
+}
+
+.card>*:last-child {
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+    padding-bottom: 16px;
+}
+
+header {
+    /* display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: 16px; */
+    font-weight: 700;
+    position: relative;
+}
+
+header>.card-title {
+    white-space: inherit;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
+
+header>.card-title.muted {
+    color: var(--foreground-subdued);
+}
+
+.card-icon {
+    width: 48px;
+    height: 48px;
+    background-color: var(--background-subdued);
+    border-radius: var(--border-radius);
+    font-size: 32px;
+    flex: 0 0 48px;
+    display: flex;
+    justify-content: stretch;
+    align-items: stretch;
+}
+
+.card-icon>.card-icon-inner {
+    padding: 0;
+    flex-grow: 1;
+    text-align: center;
+}
+.render-thumbnail {
+    aspect-ratio: 16/9;
+    height: 150px;
+    max-width: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.button-edit {
+    cursor: pointer;
+    position: absolute;
+    right: 16px;
+    top: 16px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-size: 16px;
+    border-radius: 4px;
+}
+.button-edit > .v-icon {
+    width: 16px;
+    min-width: 16px;
+    height: 16px;
+    --v-icon-size: 16px;
+}
+.button-edit::before {
+    content: '';
+    width: 100%;
+    height: 100%;
+    opacity: 0.4;
+    background-color: #111827;
+    right: 0;
+    position: absolute;
+    border-radius: 4px;
+}
+.menu-edit {
+    position: absolute;
+    top: 55px;
+    right: 17px;
+    background-color: #fff;
+    list-style-type: none;
+    z-index: 10;
+    padding-left: 0;
+    min-width: 130px;
+    border-radius: 4px;
+    display: none;
+} 
+.show-menu-edit {
+    display: block;
+}
+.menu-edit > li {
+    padding: 8px 0;
+    padding-left: 16px;
+    border-bottom: 1px solid #E2E8F0;
+    font-weight: 400;
+    font-size: 14px;
+}
+.menu-edit > li:hover {
+    color: #4F46E5;
+}
+.menu-edit > li:last-child {
+    border-bottom: unset;
+}
+</style>

@@ -1,43 +1,376 @@
 <template>
-	<div class="boards-layout">
-		<paginate-group v-for="choice in choices" :key="choice.text" :field="field" :field-value="choice.value"
-			:collection="collectionKey" :layout-options="layoutOptions" :filter="filter" :search="search" />
+	<div class="kanboard">
+		<draggable
+			:model-value="groupedItems"
+			group="groups"
+			item-key="id"
+			draggable=".draggable"
+			:animation="150"
+			class="draggable"
+			:class="{ sortable: groupsSortField !== null }"
+			@change="changeGroupSort"
+		>
+			<template #item="{ element: group }">
+				<group
+					:key="group.title"
+					:group-title="group.title"
+					:field="field"
+					:field-value="group.id"
+					:collection="collectionKey"
+					:layout-options="layoutOptions"
+					:filter="filter"
+					:search="search"
+					:sort="sort"
+					:class="{ draggable: group.id !== null }"
+					:primary-key-field="primaryKeyField"
+					:reloadGroup="reloadGroup"
+					@create-item="handleOpenDrawerCreateItem"
+					@edit-item="handleOpenDrawerEditItem"
+					@open-change-log="handleOpenDrawerChangeLog"
+					@click-item="handleOpenDrawerEditItem"
+					@delete-group="deleteGroup(group.id)"
+					@edit-group="handleEditGroup"
+				/>
+			</template>
+		</draggable>
+		<div class="add-group" @click="editDialogOpen = '+'">
+			<v-icon name="add_box" />
+			<span class="ml-8px font-500 text-14px">Add new list</span>
+		</div>
+		<v-dialog :model-value="editDialogOpen !== null" @esc="cancelChanges()">
+			<v-card>
+				<v-card-title>
+					{{ editDialogOpen === '+' ? t('layouts.kanban.add_group') : t('layouts.kanban.edit_group') }}
+				</v-card-title>
+				<v-card-text>
+					<v-input v-model="editTitle" :placeholder="t('layouts.kanban.add_group_placeholder')" />
+				</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="cancelChanges()">{{ t('cancel') }}</v-button>
+					<v-button @click="saveChanges">{{ editDialogOpen === '+' ? t('create') : t('save') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+		<!-- create item -->
+		<DrawerItem
+			v-model:active="openDrawerCreateItem"
+			:collection="collectionKey"
+			:edits="edits"
+			@input="handleCreateItem"
+		/>
+		<!-- edit item -->
+		<DrawerItem
+            v-model:active="openDrawerItemEdit"
+            :collection="collectionKey"
+			:edits="edits"
+            circular-field="status"
+            @input="handleEditItem"
+        >
+			<template #actions>
+				<div 
+					@click="handleNextItem"
+					:class="{'disable-button-next-pre' : disableNextItem}"
+					class="bg-indigo-50 w-44px h-44px flex flex-col items-center justify-center text-#6366F1 rounded-50% hover:bg-indigo-200 cursor-pointer"
+				>
+					<v-icon name="keyboard_arrow_down"/>
+				</div>
+				<div 
+					@click="handlePreItem"
+					:class="{ 'disable-button-next-pre' : disablePrevItem}"
+					class="bg-indigo-50 w-44px h-44px flex flex-col items-center justify-center text-#6366F1 rounded-50% hover:bg-indigo-200 cursor-pointer"
+				>
+					<v-icon name="keyboard_arrow_up"/>
+				</div>
+			</template>
+		</DrawerItem>
+		<!-- changelog -->
+		<v-drawer
+			:model-value="openChangeLog"
+			title="CHANGE LOG"
+			subtitle="Card's log"
+			@cancel="openChangeLog = false"
+		>
+			<div v-for="item, index in listRevisions" :key="index" class="item-change-log" @click="handleOpenChangeLogDetail(item, index)">
+				<div class="w-40px h-40px">
+					<v-image v-if="item?.activity?.user?.avatar" class="render-thumbnail" :src="partImage(item?.activity?.user?.avatar)" />
+					<div v-else class="w-100% h-100% rounded-full bg-slate-200"></div>
+				</div>
+				<div class="ml-12px">
+					<div class="text-14px font-400">
+						<span class="font-700">{{ item?.activity?.user?.email }}</span>
+						<span v-if="item?.activity?.action === 'update'"> Update Item</span>
+						<span v-if="item?.activity?.action === 'create'"> Create Item</span>
+					</div>
+					<div class="flex items-center text-12px font-400 mt-8px leading-18px">
+						<v-icon name="nest_clock_farsight_analog" />
+						<span class="ml-4px">{{ formatDateTime(item?.activity?.timestamp) }}</span>
+					</div>
+				</div>
+			</div>
+		</v-drawer>
+		<!-- detail changelog -->
+		<v-drawer
+			:model-value="openChangeLogDetail"
+			title="Item Revision"
+			:subtitle= "detailRevisionSubtitle ? detailRevisionSubtitle : null"
+			@cancel="openChangeLogDetail = false"
+		>
+			<div class="px-40px">
+				<div v-for="item in detailRevisionDataChange" :key="item.key" class="item-detail-revision text-15px">
+					<div class="text-16px font-600 mb-8px">{{ convertToDisplayName(item?.key) }} </div>
+					<div class="px-10px py-5px text-red-600 bg-red-100">- <span class="ml-20px">{{ item?.newValue }}</span></div>
+					<div class="px-10px py-5px text-green-600 bg-green-100">- <span class="ml-20px">{{ item?.oldValue }}</span></div>
+				</div>
+			</div>
+		</v-drawer>
+
+
+		<!-- drawer-item, changelog popup -->
 	</div>
+	<!-- <div class="boards-layout"></div> -->
 </template>
-  
-<script lang="ts">
-import { useCollection } from "@directus/extensions-sdk";
-import { Field, Filter } from "@directus/types";
-import { computed, defineComponent, PropType, toRefs } from "vue";
-import paginateGroup from "./components/paginate-group.vue";
+<script setup lang="ts">
+import { useCollection, useApi, useSync } from "@directus/extensions-sdk";
+import { Field, Filter, Item } from "@directus/types";
+import { ref, computed, defineComponent, PropType, toRefs, defineOptions } from "vue";
+import { useI18n } from 'vue-i18n';
+import Group from "./components/group.vue";
 import { LayoutOptions } from "./types";
-export default defineComponent({
-	components: { paginateGroup },
-	inheritAttrs: false,
-	props: {
-		layoutOptions: { type: Object as PropType<LayoutOptions>, required: false },
-		collection: { type: String, required: true },
-		filter: { type: Object as PropType<Filter | null>, default: null },
-		search: { type: String as PropType<string | null>, default: null },
-	},
-	setup(props) {
-		const { collection: collectionKey, layoutOptions } = toRefs(props);
-		const collection = useCollection(collectionKey);
+import Draggable from 'vuedraggable';
+import { notify } from '../share/utils/notify';
+import { formatDateTime, convertToDisplayName } from '../share/utils/formatData'
+import { partImage } from '../share/utils/part-image'
+import { ValueIteratee } from "lodash";
 
-		const field = computed<Field | undefined>(() =>
-			collection.fields.value.find(
-				(f) => f.field == layoutOptions.value?.groupByField
-			)
-		);
-		const choices = computed<{ text: string }[]>(
-			() => field.value?.meta?.options?.choices || []
-		);
+defineOptions({ inheritAttrs: false });
 
-		return { choices, field, collectionKey };
-	},
+interface Props {
+	layoutOptions?: LayoutOptions;
+	collection: string;
+	primaryKeyField?: Record<string, any> | null;
+	filter?: Filter | null;
+	search?: string | null;
+
+	groupCollection?: string | null;
+	groupedItems?: Group[];
+	groupTitle?: string | null;
+	changeGroupSort: (event: ChangeEvent<Group>) => void;
+	addGroup: (title: string) => Promise<void>;
+	editGroup: (id: string | number, title: string) => Promise<void>;
+	deleteGroup: (id: string | number) => Promise<void>;
+	isRelational?: boolean;
+	sortField?: string | null;
+	userField?: string | null;
+	groupsSortField?: string | null;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	layoutOptions: () => ({}),
+	collection: null,
+	primaryKeyField: null,
+	filter: null,
+	search: null,
+
+	groupCollection: null,
+	fieldsInCollection: () => [],
+	groupedItems: () => [],
+	groupTitle: null,
+	isRelational: true,
+	sortField: null,
+	userField: null,
+	groupsSortField: null,
 });
+
+const emit = defineEmits(['update:selection', 'update:limit', 'update:size', 'update:sort', 'update:width', 'update:groupTitle']);
+
+const { t } = useI18n();
+const api = useApi();
+const editDialogOpen = ref<string | number | null>(null);
+const editTitle = ref('');
+// function openEditGroup(group: Group) {
+	
+// 	editDialogOpen.value = group.id;
+// 	editTitle.value = group.title;
+// }
+
+function cancelChanges() {
+	editDialogOpen.value = null;
+	editTitle.value = '';
+}
+
+function saveChanges() {
+	if(props.isRelational) {
+		if (editDialogOpen.value === '+') {
+			props.addGroup(editTitle.value);
+		} else if (editDialogOpen.value) {
+			props.editGroup(editDialogOpen.value, editTitle.value);
+		}
+	}
+	else {
+		props.addGroup(editTitle.value);
+	}
+	editDialogOpen.value = null;
+	editTitle.value = '';
+}
+function handleEditGroup(id, title) {
+	props.editGroup(id,title)
+}
+// function changeSort(event:any) {
+// 	console.log('sort', event)
+// }
+const openDrawerCreateItem = ref(false)
+const openDrawerItemEdit = ref(false)
+const reloadGroup = ref(false)
+const edits = ref({});
+function handleOpenDrawerCreateItem (fieldValue: string) {
+	edits.value = {
+		status: fieldValue,
+	}
+	console.log('edits',edits.value);
+	
+	openDrawerCreateItem.value = true
+}
+async function handleCreateItem(data: any) {
+	
+	if (!data) return;
+	try {
+		reloadGroup.value = false;
+		await api.post(`/items/${collectionKey.value}`, data);
+		reloadGroup.value = true;
+		notify({
+            title: `Successfully created ${data.title} item`
+        });
+	} catch (error) {
+		notify({
+            title: error
+        });
+	}
+
+}
+const listItems = ref([])
+const valueIndex = ref<Number>(0)
+const disablePrevItem = ref(false);
+const disableNextItem = ref(false);
+
+function handleOpenDrawerEditItem(items: Array, item: Object, index: Number) {
+	listItems.value = items
+	valueIndex.value = index
+
+	if (index == 0) {
+		disablePrevItem.value = true;
+		disableNextItem.value = false;
+	} else if (index == listItems.value.length - 1) {
+		disablePrevItem.value = false;
+		disableNextItem.value = true;
+	} else {
+		disablePrevItem.value = false;
+		disableNextItem.value = false;
+	}
+
+	console.log('disablePrevItem.value',disablePrevItem.value);
+	console.log('disableNextItem.value',disableNextItem.value);
+	
+
+	Object.keys(item).forEach((key) => {
+		edits.value[key] = item[key];
+	});
+
+	openDrawerItemEdit.value = true
+}
+const openChangeLog = ref(false)
+const openChangeLogDetail = ref(false)
+const listRevisions = ref([])
+async function handleOpenDrawerChangeLog (item: Item) {
+	const res = await api.get('revisions', {
+        params: {
+            fields: ['activity.*','activity.user.*', 'data'],
+			sort: ['-activity.timestamp'],
+            filter: {
+                collection: {
+                    _eq: collectionKey.value,
+                },
+                item: {
+                    _eq: item.id,
+                },
+                // version: {
+                //     _null: true,
+                // },
+            },
+        }
+    })
+	listRevisions.value = res.data.data
+	openChangeLog.value = true
+	
+}
+
+const detailRevisionSubtitle = ref('')
+const detailRevisionDataChange = ref({})
+
+function handleOpenChangeLogDetail(item, index) {
+	detailRevisionSubtitle.value = `${formatDateTime(item?.activity?.timestamp)} by ${item?.activity?.user?.email}`
+
+	const differences = [];
+
+	for (let key in item?.data) {
+		if (item?.data[key] !== listRevisions.value[index + 1]?.data[key]) {
+			differences.push({ key, oldValue: item?.data[key], newValue: listRevisions.value[index + 1]?.data[key] });
+		}
+	}
+
+	for (let key in listRevisions.value[index + 1]?.data) {
+		if (!item?.data.hasOwnProperty(key)) {
+			differences.push({ key, oldValue: null, newValue: listRevisions.value[index + 1]?.data[key] });
+		}
+	}
+
+	detailRevisionDataChange.value = differences
+	openChangeLogDetail.value = true
+}
+
+function handleNextItem() {
+	openDrawerItemEdit.value = false
+
+	// handleOpenDrawerEditItem(listItems.value, listItems.value[valueIndex.value + 1], valueIndex.value + 1)
+	setTimeout(() => {
+		handleOpenDrawerEditItem(listItems.value, listItems.value[valueIndex.value + 1], valueIndex.value + 1)
+	},100)
+
+}
+function handlePreItem() {
+	openDrawerItemEdit.value = false
+
+	setTimeout(() => {
+		handleOpenDrawerEditItem(listItems.value, listItems.value[valueIndex.value - 1], valueIndex.value - 1)
+	},100)
+}
+async function handleEditItem(data: any) {
+    if (!data) return;
+	try {
+		reloadGroup.value = false;
+		await api.patch(`/items/${collectionKey.value}/${data.id}`, data);
+		reloadGroup.value = true;
+		openDrawerItemEdit.value = false;
+		notify({
+            title: `Item ${data.title} has been successfully edited`
+        });
+	} catch (error) {
+		notify({
+            title: error
+        });
+	}
+}
+const { collection: collectionKey, layoutOptions } = toRefs(props);
+const collection = useCollection(collectionKey);
+
+const field = computed<Field | undefined>(() =>
+	collection.fields.value.find(
+		(f) => f.field == layoutOptions.value?.groupByField
+	)
+);
+const choices = computed<{ text: string }[]>(
+	() => field.value?.meta?.options?.choices || []
+);
 </script>
-  
 <style scoped>
 .boards-layout {
 	padding: var(--content-padding);
@@ -45,5 +378,77 @@ export default defineComponent({
 	display: flex;
 	align-items: stretch;
 	gap: var(--content-padding);
+}
+.kanboard {
+	display: flex;
+	height: calc(100% - 65px - 2 * 24px);
+	padding: 0px 32px 24px 32px;
+	overflow-x: auto;
+	overflow-y: hidden;
+	--user-spacing: 16px;
+
+	.draggable {
+		display: flex;
+
+		.group {
+			display: flex;
+			flex-direction: column;
+			width: 320px;
+			padding: 8px 0;
+			background-color: var(--theme--background-normal);
+			border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+			border-radius: var(--theme--border-radius);
+			margin-right: 20px;
+			transition: border-color var(--transition) var(--fast);
+
+			&:active {
+				border-color: var(--theme--form--field--input--border-color-hover);
+				cursor: move;
+			}
+		}
+	}
+}
+.disable-button-next-pre {
+	pointer-events: none;
+	cursor: not-allowed !important;
+	background: #e5e7eb;
+	opacity: 0.5;
+}
+.item-change-log:first-child {
+	margin-top: 0;
+}
+.item-change-log {
+	--v-icon-size: 15px;
+	display: flex;
+	margin-top: 20px;
+	padding: 0 40px;
+}
+.item-change-log:hover {
+	background-color: #f0f9ff;
+}
+.render-thumbnail {
+    aspect-ratio: 16/9;
+    height: 100%;
+	width: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+.item-detail-revision {
+	font-size: 15px;
+	margin-bottom: 20px;
+}
+.item-detail-revision:first-child {
+	margin-bottom: 0;
+}
+.add-group {
+	min-width: 252px;
+	height: 44px;
+	display: flex;
+	align-items: center;
+	background-color: #E5E7EB;
+	padding: 14px 0;
+	padding-left: 12px;
+	border-radius: 4px;
+	cursor: pointer;
 }
 </style>
