@@ -120,7 +120,7 @@ const userFieldSync = useSync(props, 'userField', emit);
 		<template #title>{{ t('layouts.kanban.advanced') }}</template>
 
 		<div class="nested-options">
-			<div class="field">
+			<!-- <div class="field">
 				<div class="type-label">{{ t('layouts.kanban.tags') }}</div>
 				<v-select
 					v-model="tagsFieldSync"
@@ -130,7 +130,7 @@ const userFieldSync = useSync(props, 'userField', emit);
 					:placeholder="t('layouts.kanban.tags_placeholder')"
 					show-deselect
 				/>
-			</div>
+			</div> -->
 
 			<div class="field">
 				<div class="type-label">{{ t('layouts.kanban.date') }}</div>
