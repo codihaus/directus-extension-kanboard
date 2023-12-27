@@ -1,6 +1,6 @@
 {
   "name": "@codihaus/directus-extension-kanboard",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "directus:extension": {
     "host": "^10.1.9",
