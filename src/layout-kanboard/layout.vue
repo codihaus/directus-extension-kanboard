@@ -223,8 +223,9 @@ const openDrawerItemEdit = ref(false)
 const reloadGroup = ref(false)
 const edits = ref({});
 function handleOpenDrawerCreateItem (fieldValue: string) {
+
 	edits.value = {
-		status: fieldValue,
+		[field.value.field]: fieldValue,
 	}
 	
 	openDrawerCreateItem.value = true
@@ -285,7 +286,7 @@ async function handleOpenDrawerChangeLog (item: Item) {
                     _eq: collectionKey.value,
                 },
                 item: {
-                    _eq: item.id,
+                    _eq: item?.[props.primaryKeyField.value?.field],
                 },
                 // version: {
                 //     _null: true,
@@ -359,7 +360,7 @@ const collection = useCollection(collectionKey);
 
 const field = computed<Field | undefined>(() =>
 	collection.fields.value.find(
-		(f) => f.field == layoutOptions.value?.groupByField
+		(f) => f.field == layoutOptions.value?.groupField
 	)
 );
 const choices = computed<{ text: string }[]>(

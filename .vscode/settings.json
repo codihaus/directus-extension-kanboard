@@ -1,5 +1,8 @@
 {
     "i18n-ally.localesPaths": [
         "directus/src/lang"
+    ],
+    "conventionalCommits.scopes": [
+        "card"
     ]
 }

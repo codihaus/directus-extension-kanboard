@@ -177,10 +177,10 @@ const userFieldSync = useSync(props, 'userField', emit);
 				<div class="type-label">{{ t('layouts.kanban.show_ungrouped') }}</div>
 				<v-checkbox v-model="showUngroupedSync" block :label="t('layouts.kanban.show')" />
 			</div>
-			<div class="field">
+			<!-- <div class="field">
 				<div class="type-label">{{ 'Infinite Scroll' }}</div>
 				<v-checkbox v-model="showUngroupedSync" block label="Enable" />
-			</div>
+			</div> -->
 		</div>
 	</v-detail>
 </template>
