@@ -34,7 +34,7 @@
                         :item="element"
                         :data-item-id="element[primaryKeyField?.field]"
                         :collectionKey="collectionKey"
-                        :primary-key-field="primaryKeyField
+                        :primary-key-field="primaryKeyField"
                         @delete-item="handleDeleteItem"
                         @edit-item="handleEditItem(element ,index)"
                         @open-change-log="$emit('openChangeLog', element)"
