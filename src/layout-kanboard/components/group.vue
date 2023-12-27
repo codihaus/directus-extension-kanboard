@@ -4,17 +4,17 @@
             <div class="w-55% flex gap-5px items-center">
                 <!-- <component :is="`display-${field?.meta?.display}`" v-bind="field?.meta?.display_options" :type="field?.type" :value="fieldValue" /> -->
                 <span>{{ groupIndex + 1 }}</span>
-                <div v-if="!valueOpenEditGroupTitle" class="cursor-pointer capitalize" @click="valueOpenEditGroupTitle = true">{{ groupTitle }}</div>
-                <div v-if="valueOpenEditGroupTitle" class="edit-title-group flex items-center">
-                    <v-input v-model="valueGroupTitle"/>
-                    <div class="text-12px text-white ml-5px px-5px py-2px bg-indigo-500 rounded-4px" @click="handleSaveEditGroup( fieldValue, valueGroupTitle)">Save</div>
-                </div>
+                <div class="capitalize" @click="valueOpenEditGroupTitle = true">{{ groupTitle }}</div>
             </div>
-            <div class="flex">
-                <div class="delete_group" @click="$emit('deleteGroup')">
-                    <v-icon name="delete" />
+            <div class="flex relative">
+                <div @click="handleShowMenuGroup(fieldValue)">
+                    <v-icon name="more_horiz" />
                 </div>
-                <div class="create_item" @click="$emit('createItem', fieldValue)">
+                <ul class="menu-edit" :class="{'show-menu-edit': iShowMenuGroup === fieldValue}">
+                    <li @click="emit('editGroup')">Edit Group</li>
+                    <li @click="$emit('deleteGroup')">Delete Group</li>
+                </ul>
+                <div class="create_item cursor-pointer" @click="$emit('createItem', fieldValue)">
                     <v-icon name="add" />
                 </div>
             </div>
@@ -122,7 +122,6 @@ const emit = defineEmits([
     'deleteGroup',
     'editGroup'
 ])
-const valueGroupTitle = ref(props.groupTitle)
 const valueOpenEditGroupTitle = ref(false)
 const {
     primaryKeyField,
@@ -231,10 +230,14 @@ function handleDeleteItem () {
 function handleEditItem (item: Item, index: number) {
     emit('editItem',items.value, item, index)
 }
-function handleSaveEditGroup(id: string | number, value: string){
-    emit('editGroup', id, value)
-    
-    valueOpenEditGroupTitle.value = false
+const iShowMenuGroup = ref(null)
+function handleShowMenuGroup(id: string) {
+    if(iShowMenuGroup.value !== null) {
+        iShowMenuGroup.value = null
+    }
+    else {
+        iShowMenuGroup.value = id
+    }
 }
 </script>
 <style scoped>
@@ -275,5 +278,33 @@ main {
 
 .cards>*:last-child {
     flex-grow: 1;
+}
+.menu-edit {
+    position: absolute;
+    top: 30px;
+    right: 17px;
+    background-color: #fff;
+    list-style-type: none;
+    z-index: 10;
+    padding-left: 0;
+    min-width: 130px;
+    border-radius: 4px;
+    display: none;
+} 
+.show-menu-edit {
+    display: block;
+}
+.menu-edit > li {
+    padding: 8px 0;
+    padding-left: 16px;
+    border-bottom: 1px solid #E2E8F0;
+    font-weight: 400;
+    font-size: 14px;
+}
+.menu-edit > li:hover {
+    color: #4F46E5;
+}
+.menu-edit > li:last-child {
+    border-bottom: unset;
 }
 </style>

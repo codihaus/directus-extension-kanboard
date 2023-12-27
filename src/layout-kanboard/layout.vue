@@ -31,7 +31,7 @@
 					@open-change-log="handleOpenDrawerChangeLog"
 					@click-item="handleOpenDrawerEditItem"
 					@delete-group="deleteGroup(group.id)"
-					@edit-group="handleEditGroup"
+					@edit-group="openEditGroup(group)"
 				/>
 			</template>
 		</draggable>
@@ -189,11 +189,12 @@ const { t } = useI18n();
 const api = useApi();
 const editDialogOpen = ref<string | number | null>(null);
 const editTitle = ref('');
-// function openEditGroup(group: Group) {
+function openEditGroup(group: Group) {
+	console.log('group',props.groupedItems);
 	
-// 	editDialogOpen.value = group.id;
-// 	editTitle.value = group.title;
-// }
+	editDialogOpen.value = group.id;
+	editTitle.value = group.title;
+}
 
 function cancelChanges() {
 	editDialogOpen.value = null;
@@ -201,25 +202,15 @@ function cancelChanges() {
 }
 
 function saveChanges() {
-	if(props.isRelational) {
-		if (editDialogOpen.value === '+') {
-			props.addGroup(editTitle.value);
-		} else if (editDialogOpen.value) {
-			props.editGroup(editDialogOpen.value, editTitle.value);
-		}
-	}
-	else {
+	console.log('editDialogOpen',editDialogOpen);
+	if (editDialogOpen.value === '+') {
 		props.addGroup(editTitle.value);
+	} else if (editDialogOpen.value) {
+		props.editGroup(editDialogOpen.value, editTitle.value);
 	}
 	editDialogOpen.value = null;
 	editTitle.value = '';
 }
-function handleEditGroup(id, title) {
-	props.editGroup(id,title)
-}
-// function changeSort(event:any) {
-// 	console.log('sort', event)
-// }
 const openDrawerCreateItem = ref(false)
 const openDrawerItemEdit = ref(false)
 const reloadGroup = ref(false)
@@ -288,7 +279,7 @@ async function handleOpenDrawerChangeLog (item: Item) {
                     _eq: collectionKey.value,
                 },
                 item: {
-                    _eq: item?.[props.primaryKeyField.value?.field],
+                    _eq: item?.[props.primaryKeyField?.field],
                 },
                 // version: {
                 //     _null: true,

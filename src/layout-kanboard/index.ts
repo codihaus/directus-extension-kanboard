@@ -8,6 +8,7 @@ import { addTokenToURL } from '../shared/utils/add-token-to-url';
 import LayoutComponent from './layout.vue';
 import Options from "./options.vue";
 import Actions from "./actions.vue";
+import { notify } from "../share/utils/notify"
 
 export default defineLayout({
 	id: 'cdh-kanboard',
@@ -395,6 +396,7 @@ export default defineLayout({
 					if (!selectedGroup.value) return;
 					
 					const updatedChoices = selectedGroup.value?.meta?.options?.choices 
+					
 					updatedChoices.push({text: title, value: title.replace(/\s+/g, '_') })
 					await fieldsStore.updateField(selectedGroup.value.collection, selectedGroup.value.field, {
 						meta: { options: { choices: updatedChoices } },
@@ -420,6 +422,7 @@ export default defineLayout({
 								return {
 									...choice,
 									text: title,
+									value: title.replace(/\s+/g, '_')
 								};
 							}
 
@@ -429,7 +432,7 @@ export default defineLayout({
 
 					await fieldsStore.updateField(selectedGroup.value.collection, selectedGroup.value.field, {
 						meta: { options: { choices: updatedChoices } },
-					});
+					});					
 				}
 
 				await getGroups();
