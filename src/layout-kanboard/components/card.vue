@@ -11,7 +11,7 @@
             <div class="button-edit" @click="handleShowMenuEdit(item)">
                 <v-icon name="edit" />
             </div>
-            <ul class="menu-edit" :class="{'show-menu-edit': isShowMenuEdit === item.id}">
+            <ul class="menu-edit" :class="{'show-menu-edit': isShowMenuEdit === item?.[props.primaryKeyField.field]}">
                 <li @click="handleEditItem">Edit Item</li>
                 <li @click="$emit('openChangeLog')">Change log</li>
                 <li @click="handleDeleteItem(item)">Delete</li>
@@ -37,6 +37,7 @@ import { notify } from '../../share/utils/notify';
 import { useRevisions } from '@/composables/use-revisions';
 interface Props {
 	layoutOptions?: LayoutOptions;
+    primaryKeyField?: Record<string, any> | null;
 	collection?: string;
     collectionKey?: string;
 	filter?: Filter | null;
@@ -61,12 +62,13 @@ function handleShowMenuEdit(item: Object) {
         isShowMenuEdit.value = null
     }
     else {
-        isShowMenuEdit.value = item.id
+        isShowMenuEdit.value = item?.[props.primaryKeyField.field]
     }
+    
 }
 async function handleDeleteItem(item: Object) {
     try {
-        await api.delete(`/items/${props.collectionKey}/${item.id}`);
+        await api.delete(`/items/${props.collectionKey}/${item?.[props.primaryKeyField.field]}`);
         isShowMenuEdit.value = null;
         emit('deleteItem')
         notify({
