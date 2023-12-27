@@ -39,7 +39,7 @@ export default defineLayout({
 		const { sort, limit, page, fields } = useLayoutQuery();
 
 		const { fieldGroups } = useFilterFields(fieldsInCollection, {
-			title: (field) => field.type === 'string',
+			title: (field) => field.type === 'string' || field.type === 'text',
 			text: (field) => field.type === 'string' || field.type === 'text',
 			tags: (field) => field.type === 'json' || field.type === 'csv',
 			date: (field) => ['date', 'time', 'dateTime', 'timestamp'].includes(field.type),
