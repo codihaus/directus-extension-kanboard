@@ -1,5 +1,5 @@
 {
-  "name": "@codihaus/directus-extension-kanboard",
+  "name": "directus-extension-kanboard",
   "version": "0.0.2",
   "type": "module",
   "directus:extension": {
