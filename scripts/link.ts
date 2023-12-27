@@ -1,4 +1,4 @@
-import { ExtensionManifest } from '@directus/constants';
+import { ExtensionManifest } from '@directus/extensions';
 import fs from 'fs-extra';
 import path from 'path';
 import { log } from '../node_modules/@directus/extensions-sdk/dist/cli/utils/logger.js';
