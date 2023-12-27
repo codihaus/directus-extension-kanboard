@@ -8,7 +8,7 @@
                 format
                 class="card-title"
             ></display-formatted-value>
-            <div class="button-edit" @click="handleShowMenuEdit(item)">
+            <div class="button-edit" @click.stop="handleShowMenuEdit(item)">
                 <v-icon name="edit" />
             </div>
             <ul class="menu-edit" :class="{'show-menu-edit': isShowMenuEdit === item?.[props.primaryKeyField.field]}">
