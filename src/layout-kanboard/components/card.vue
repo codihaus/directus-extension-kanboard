@@ -8,7 +8,7 @@
                 format
                 class="card-title"
             ></display-formatted-value>
-            <div class="button-edit" @click="handleShowMenuEdit(item, event)">
+            <div class="button-edit" @click="handleShowMenuEdit(item)">
                 <v-icon name="edit" />
             </div>
             <ul class="menu-edit" :class="{'show-menu-edit': isShowMenuEdit === item.id}">
@@ -56,9 +56,7 @@ const emit = defineEmits([
 ])
 
 const isShowMenuEdit = ref(null) 
-function handleShowMenuEdit(item: Object, event) {
-    console.log('event',event);
-    
+function handleShowMenuEdit(item: Object) {
     if(isShowMenuEdit.value !== null) {
         isShowMenuEdit.value = null
     }
