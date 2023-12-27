@@ -192,7 +192,6 @@ async function change(event, group) {
         await api.patch(`items/${collectionKey.value}`, [diff]);
         item = id
         to = items.value[event.added.newIndex-1]?.[pkField];
-        console.log('change event added', item, to, items.value)
     }
 
     if( event.moved ) {
@@ -207,9 +206,6 @@ async function change(event, group) {
 
         to = (event.moved.oldIndex - event.moved.newIndex) > 1 ? before : to
         to = (event.moved.newIndex - event.moved.oldIndex) > 1 ? after : to
-
-        console.log('change event moved', event.moved.oldIndex, event.moved.newIndex, item, to, before)
-        console.log(group)
     }
 
     if (item !== undefined && to !== undefined) {

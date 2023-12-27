@@ -137,7 +137,6 @@ export default defineLayout({
 		const groupedItems = computed<Group[]>(() => {
 			const groupsCollectionPrimaryKeyField = groupsPrimaryKeyField.value?.field;
 			const groupTitleField = groupTitle?.value || groupsCollectionPrimaryKeyField;
-			console.log('groupTitleField',groupTitleField);
 			
 			const group = groupField.value;
 			const pkField = primaryKeyField.value?.field;
@@ -437,7 +436,6 @@ export default defineLayout({
 			}
 
 			async function changeGroupSort(event: ChangeEvent<Group>) {
-				console.log('before sort')
 				if (!event.moved) return;
 
 				const offset = showUngrouped.value ? 1 : 0;
@@ -598,14 +596,5 @@ export default defineLayout({
 			userFieldType,
 		};
 
-
-		const groupByField = layoutOptions.value?.groupByField;
-		const headerTemplate = layoutOptions.value?.headerTemplate;
-		const cardContentTemplate = layoutOptions.value?.cardContentTemplate;
-
-		console.log('layoutOptions', layoutOptions)
-		console.log('groupByField', groupByField)
-
-		return { groupByField, headerTemplate, cardContentTemplate };
 	},
 });

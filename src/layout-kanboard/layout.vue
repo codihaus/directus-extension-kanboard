@@ -226,7 +226,6 @@ function handleOpenDrawerCreateItem (fieldValue: string) {
 	edits.value = {
 		status: fieldValue,
 	}
-	console.log('edits',edits.value);
 	
 	openDrawerCreateItem.value = true
 }
@@ -266,11 +265,7 @@ function handleOpenDrawerEditItem(items: Array, item: Object, index: Number) {
 		disablePrevItem.value = false;
 		disableNextItem.value = false;
 	}
-
-	console.log('disablePrevItem.value',disablePrevItem.value);
-	console.log('disableNextItem.value',disableNextItem.value);
 	
-
 	Object.keys(item).forEach((key) => {
 		edits.value[key] = item[key];
 	});
