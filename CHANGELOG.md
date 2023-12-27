@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.0.3
+
+[compare changes](https://github.com/codihaus/directus-extension-kanboard/compare/v0.0.2...v0.0.3)
+
+### 🏡 Chore
+
+- Rename repo ([71cd915](https://github.com/codihaus/directus-extension-kanboard/commit/71cd915))
+
+### ❤️ Contributors
+
+- CodiHaus <contact@codihaus.com>
+
 ## v0.0.2
 
 [compare changes](https://github.com/codihaus/directus-extension-kanboard/compare/v0.0.1...v0.0.2)
