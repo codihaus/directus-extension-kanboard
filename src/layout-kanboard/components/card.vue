@@ -14,7 +14,7 @@
             <ul class="menu-edit" :class="{'show-menu-edit': isShowMenuEdit === item?.[props.primaryKeyField.field]}">
                 <li @click="handleEditItem">Edit Item</li>
                 <li @click="$emit('openChangeLog')">Change log</li>
-                <li @click="handleDeleteItem(item)">Delete</li>
+                <li @click.stop="handleDeleteItem(item)">Delete</li>
             </ul>
         </header>
         <main v-if="layoutOptions?.cardContentTemplate">
