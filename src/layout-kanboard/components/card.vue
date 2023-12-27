@@ -56,7 +56,9 @@ const emit = defineEmits([
 ])
 
 const isShowMenuEdit = ref(null) 
-function handleShowMenuEdit(item: Object) {
+function handleShowMenuEdit(item: Object, event) {
+    console.log('event',event);
+    
     if(isShowMenuEdit.value !== null) {
         isShowMenuEdit.value = null
     }
