@@ -1,41 +1,28 @@
 <template>
     <section class="card drag-handle">
         <header>
-            <div v-if="layoutOptions?.iconTemplate" class="card-icon">
-                <render-template
-                    class="card-icon-inner"
-                    :template="layoutOptions.iconTemplate"
-                    :collection="collection" :item="item"
-                />
-            </div>
-            
-            <v-image v-if="item.thumbnail" class="render-thumbnail" :src="partImage(item.thumbnail)" />
-            <render-template
-                v-if="layoutOptions?.headerTemplate"
+            <v-image v-if="item?.[layoutOptions?.imageSource]" class="render-thumbnail" :src="partImage(item?.[layoutOptions?.imageSource])" />
+            <display-formatted-value
+                type="text"
+                :value="item?.[layoutOptions?.titleField]"
+                format
                 class="card-title"
-                :template="layoutOptions.headerTemplate"
-                :collection="collection"
-                :item="item"
-            />
-            <span v-else class="card-title muted">--</span>
+            ></display-formatted-value>
             <div class="button-edit" @click="handleShowMenuEdit(item)">
                 <v-icon name="edit" />
             </div>
             <ul class="menu-edit" :class="{'show-menu-edit': isShowMenuEdit === item.id}">
                 <li @click="handleEditItem">Edit Item</li>
-                <!-- <li>Move</li> -->
                 <li @click="$emit('openChangeLog')">Change log</li>
-                <li>Archive</li>
                 <li @click="handleDeleteItem(item)">Delete</li>
             </ul>
-            <!-- <pre>{{ item }}</pre> -->
         </header>
         <main v-if="layoutOptions?.cardContentTemplate">
-            <render-template
-                :template="layoutOptions.cardContentTemplate"
-                :collection="collection"
-                :item="item"
-            />
+            <display-formatted-value
+                type="text"
+                :value="item?.[layoutOptions?.textField]"
+                format
+            ></display-formatted-value>
         </main>
     </section>
 </template>
