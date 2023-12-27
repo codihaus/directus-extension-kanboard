@@ -27,7 +27,6 @@
                 group="cards"
                 @change="change"
                 >
-                                        <!-- @click="handleEditItem(element ,index)" -->
                 <template #item="{ element, index }">
                     <card
                         :layout-options="layoutOptions"
@@ -35,6 +34,7 @@
                         :data-item-id="element[primaryKeyField?.field]"
                         :collectionKey="collectionKey"
                         :primary-key-field="primaryKeyField"
+                        @click="handleEditItem(element ,index)"
                         @delete-item="handleDeleteItem"
                         @edit-item="handleEditItem(element ,index)"
                         @open-change-log="$emit('openChangeLog', element)"
