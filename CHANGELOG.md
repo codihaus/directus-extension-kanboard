@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.0.4
+
+[compare changes](https://github.com/codihaus/directus-extension-kanboard/compare/v0.0.3...v0.0.4)
+
+### 🏡 Chore
+
+- Update readme ([08f658a](https://github.com/codihaus/directus-extension-kanboard/commit/08f658a))
+
+### ❤️ Contributors
+
+- CodiHaus <contact@codihaus.com>
+
 ## v0.0.3
 
 [compare changes](https://github.com/codihaus/directus-extension-kanboard/compare/v0.0.2...v0.0.3)
