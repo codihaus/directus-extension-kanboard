@@ -7,12 +7,20 @@
                 <div class="capitalize" @click="valueOpenEditGroupTitle = true">{{ groupTitle }}</div>
             </div>
             <div class="flex relative">
-                <div class="create_item cursor-pointer" @click="$emit('createItem', fieldValue)">
+                <v-button 
+                    class="button-header" 
+                    @click="$emit('createItem', fieldValue)"
+                    icon
+                >
                     <v-icon name="add" />
-                </div>
-                <div @click="handleShowMenuGroup(fieldValue)">
+                </v-button>
+                <v-button 
+                    class="button-header" 
+                    @click="handleShowMenuGroup(fieldValue)" 
+                    icon
+                >
                     <v-icon name="more_vert" />
-                </div>
+                </v-button>
                 <ul class="menu-edit" :class="{'show-menu-edit': iShowMenuGroup === fieldValue}">
                     <li @click="emit('editGroup')">Edit Group</li>
                     <li @click="$emit('deleteGroup')">Delete Group</li>
@@ -279,6 +287,14 @@ main {
 
 .cards>*:last-child {
     flex-grow: 1;
+}
+.button-header {
+    --v-button-min-width:32px;
+    --v-button-width: 32px;
+    --v-button-height: 32px;
+    --v-button-background-color: none;
+    --v-icon-color: #000;
+    --v-button-background-color-hover: none
 }
 .menu-edit {
     position: absolute;
