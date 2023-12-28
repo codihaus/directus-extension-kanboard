@@ -14,7 +14,7 @@
                 >
                     <v-icon name="add" />
                 </v-button>
-                <v-menu>
+                <v-menu show-arrow>
                     <template #activator="{ toggle, active }">
                         <v-button 
                             class="button-header"
@@ -297,11 +297,12 @@ main {
     --v-button-height: 32px;
     --v-button-background-color: none;
     --v-icon-color: #000;
-    --v-button-background-color-hover: none
+    --v-button-background-color-hover: none;
+    --v-button-background-color-active: none;
 }
 .list-menu-item {
     cursor: pointer;
-    margin: 10px;
+    margin: 8px;
 }
 .icon-menu {
     --v-icon-size: 16px;

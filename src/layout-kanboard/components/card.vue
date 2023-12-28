@@ -13,7 +13,7 @@
                 format
                 class="card-title"
             ></display-formatted-value>
-            <v-menu>
+            <v-menu show-arrow>
                     <template #activator="{ toggle, active }">
                         <v-button 
                             class="button-edit-item"
@@ -267,7 +267,7 @@ main {
 }
 .list-menu-item {
     cursor: pointer;
-    margin: 10px;
+    margin: 8px;
 }
 .list-menu-item:hover {
     color: var(--project-color)
