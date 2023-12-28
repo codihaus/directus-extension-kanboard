@@ -16,6 +16,7 @@
             <v-button 
                 class="button-edit-item" 
                 :class="{'show-button-edit-item': isShowMenuEdit === item?.[props.primaryKeyField.field]}"
+                icon
                 @click.stop="handleShowMenuEdit(item)"
             >
                 <v-icon name="edit" />
@@ -215,14 +216,14 @@ main {
     border-radius: 50%;
 }
 .render-thumbnail {
-    aspect-ratio: 16/9;
-    height: 140px;
     max-width: 100%;
-    object-fit: fill;
+    object-fit: contain;
     border-radius: 6px;
 }
 .card-image-fill {
-    object-fit: cover !important;
+    width:250px;
+    height:150px;
+    object-fit: cover;
 }
 .button-edit-item {
     position: absolute;
@@ -240,9 +241,6 @@ main {
 }
 .card:hover .button-edit-item {
     opacity: 1;
-}
-.button-edit-item > button {
-    padding: unset !important;
 }
 .show-button-edit-item {
     opacity: 1 !important;

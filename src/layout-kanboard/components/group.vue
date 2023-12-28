@@ -7,16 +7,16 @@
                 <div class="capitalize" @click="valueOpenEditGroupTitle = true">{{ groupTitle }}</div>
             </div>
             <div class="flex relative">
+                <div class="create_item cursor-pointer" @click="$emit('createItem', fieldValue)">
+                    <v-icon name="add" />
+                </div>
                 <div @click="handleShowMenuGroup(fieldValue)">
-                    <v-icon name="more_horiz" />
+                    <v-icon name="more_vert" />
                 </div>
                 <ul class="menu-edit" :class="{'show-menu-edit': iShowMenuGroup === fieldValue}">
                     <li @click="emit('editGroup')">Edit Group</li>
                     <li @click="$emit('deleteGroup')">Delete Group</li>
                 </ul>
-                <div class="create_item cursor-pointer" @click="$emit('createItem', fieldValue)">
-                    <v-icon name="add" />
-                </div>
             </div>
         </header>
         <main class="overflow-y-auto">
@@ -43,6 +43,7 @@
                 </template>
             </draggable>
         </main>
+        {{ totalPages }}
         <div
             v-if="totalPages > 1"
             class="pagination mt-auto"
