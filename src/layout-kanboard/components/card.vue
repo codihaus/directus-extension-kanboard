@@ -1,7 +1,12 @@
 <template>
     <section class="card drag-handle">
         <header>
-            <v-image v-if="item?.[layoutOptions?.imageSource]" class="render-thumbnail" :src="partImage(item?.[layoutOptions?.imageSource])" />
+            <v-image 
+                v-if="item?.[layoutOptions?.imageSource]" 
+                class="render-thumbnail" 
+                :class="{'card-image-fill': layoutOptions?.crop}"
+                :src="partImage(item?.[layoutOptions?.imageSource])" 
+            />
             <display-formatted-value
                 type="text"
                 :value="item?.[layoutOptions?.titleField]"
@@ -161,12 +166,14 @@ header>.card-title.muted {
 }
 .render-thumbnail {
     aspect-ratio: 16/9;
-    height: 150px;
+    height: 140px;
     max-width: 100%;
-    object-fit: cover;
-    border-radius: 4px;
+    object-fit: fill;
+    border-radius: 6px;
 }
-
+.card-image-fill {
+    object-fit: cover !important;
+}
 .button-edit {
     cursor: pointer;
     position: absolute;

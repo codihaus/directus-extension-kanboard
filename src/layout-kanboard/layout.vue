@@ -152,7 +152,6 @@ interface Props {
 	primaryKeyField?: Record<string, any> | null;
 	filter?: Filter | null;
 	search?: string | null;
-
 	groupCollection?: string | null;
 	groupedItems?: Group[];
 	groupTitle?: string | null;

@@ -8,7 +8,7 @@ import { addTokenToURL } from '../shared/utils/add-token-to-url';
 import LayoutComponent from './layout.vue';
 import Options from "./options.vue";
 import Actions from "./actions.vue";
-import { notify } from "../share/utils/notify"
+
 
 export default defineLayout({
 	id: 'cdh-kanboard',
