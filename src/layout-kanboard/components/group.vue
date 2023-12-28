@@ -14,17 +14,26 @@
                 >
                     <v-icon name="add" />
                 </v-button>
-                <v-button 
-                    class="button-header" 
-                    @click="handleShowMenuGroup(fieldValue)" 
-                    icon
-                >
-                    <v-icon name="more_vert" />
-                </v-button>
-                <ul class="menu-edit" :class="{'show-menu-edit': iShowMenuGroup === fieldValue}">
-                    <li @click="emit('editGroup')">Edit Group</li>
-                    <li @click="$emit('deleteGroup')">Delete Group</li>
-                </ul>
+                <v-menu>
+                    <template #activator="{ toggle, active }">
+                        <v-button 
+                            class="button-header"
+                            :class="{ active }"
+                            @click="toggle" 
+                            icon
+                        >
+                            <v-icon name="more_vert" />
+                        </v-button>
+                    </template>
+                    <v-list @click="emit('editGroup')" class="hover:text-indigo-600 list-menu-item">
+                        <v-icon name="edit" class="icon-menu"/> 
+                        <span class="text-14px ml-5px">Edit Group</span>
+                    </v-list>
+                    <v-list @click="$emit('deleteGroup')" class="hover:text-red-500 list-menu-item">
+                        <v-icon name="delete" class="icon-menu"/> 
+                        <span class="text-14px ml-5px">Delete Group</span>
+                    </v-list>
+                </v-menu>
             </div>
         </header>
         <main class="overflow-y-auto">
@@ -51,7 +60,6 @@
                 </template>
             </draggable>
         </main>
-        {{totalPages}}
         <div
             v-if="totalPages > 1"
             class="pagination mt-auto"
@@ -239,14 +247,9 @@ function handleDeleteItem () {
 function handleEditItem (item: Item, index: number) {
     emit('editItem',items.value, item, index)
 }
-const iShowMenuGroup = ref(null)
-function handleShowMenuGroup(id: string) {
-    if(iShowMenuGroup.value !== null) {
-        iShowMenuGroup.value = null
-    }
-    else {
-        iShowMenuGroup.value = id
-    }
+const iShowMenuGroup = ref(false)
+function handleShowMenuGroup() {
+    iShowMenuGroup.value = true
 }
 </script>
 <style scoped>
@@ -296,33 +299,12 @@ main {
     --v-icon-color: #000;
     --v-button-background-color-hover: none
 }
-.menu-edit {
-    position: absolute;
-    top: 30px;
-    right: 25px;
-    background-color: #fff;
-    list-style-type: none;
-    z-index: 10;
-    padding-left: 0;
-    min-width: 130px;
-    border-radius: 4px;
-    display: none;
-} 
-.show-menu-edit {
-    display: block;
+.list-menu-item {
+    cursor: pointer;
+    margin: 10px;
 }
-.menu-edit > li {
-    padding: 8px 0;
-    padding-left: 16px;
-    border-bottom: 1px solid #E2E8F0;
-    font-weight: 400;
-    font-size: 14px;
-}
-.menu-edit > li:hover {
-    color: #4F46E5;
-}
-.menu-edit > li:last-child {
-    border-bottom: unset;
+.icon-menu {
+    --v-icon-size: 16px;
 }
 .v-pagination {
     justify-content: center;

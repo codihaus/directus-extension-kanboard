@@ -13,26 +13,37 @@
                 format
                 class="card-title"
             ></display-formatted-value>
-            <v-button 
-                class="button-edit-item" 
-                :class="{'show-button-edit-item': isShowMenuEdit === item?.[props.primaryKeyField.field]}"
-                icon
-                @click.stop="handleShowMenuEdit(item)"
-            >
-                <v-icon name="edit" />
-            </v-button>
-            <ul class="menu-edit" :class="{'show-menu-edit': isShowMenuEdit === item?.[props.primaryKeyField.field]}">
-                <li @click.stop="handleEditItem">Edit Item</li>
-                <li @click.stop="$emit('openChangeLog')">Change log</li>
-                <li @click.stop="handleDeleteItem()">Delete</li>
-            </ul>
+            <v-menu>
+                    <template #activator="{ toggle, active }">
+                        <v-button 
+                            class="button-edit-item"
+                            :class="{ active }"
+                            @click.stop="toggle" 
+                            icon
+                        >
+                        <v-icon name="edit" />
+                        </v-button>
+                    </template>
+                    <v-list @click.stop="$emit('editItem')" class="list-menu-item">
+                        <span class="text-14px">Edit Item</span>
+                    </v-list>
+                    <v-list @click.stop="$emit('openChangeLog')" class="list-menu-item">
+                        <span class="text-14px">Change Group</span>
+                    </v-list>
+                    <v-list @click.stop="handleDeleteItem" class="list-menu-item">
+                        <span class="text-14px">Delete Item</span>
+                    </v-list>
+                </v-menu>
         </header>
         <main v-if="layoutOptions?.cardContentTemplate">
-            <display-formatted-value
-                type="text"
-                :value="item?.[layoutOptions?.textField]"
-                format
-            ></display-formatted-value>
+            <div class="main-content">
+                <display-formatted-value
+
+                    type="text"
+                    :value="item?.[layoutOptions?.textField]"
+                    format
+                ></display-formatted-value>
+            </div>
             <div class="w-24px h24px">
                 <v-image v-if="avatarUserCreate" class="render-avatar-user-created" :src="partImage(avatarUserCreate)" />
                 <v-icon v-else name="person" />
@@ -95,16 +106,6 @@ async function getDataUser() {
 }
 getDataUser()
 
-const isShowMenuEdit = ref(null) 
-function handleShowMenuEdit(item: Object) {
-    if(isShowMenuEdit.value !== null) {
-        isShowMenuEdit.value = null
-    }
-    else {
-        isShowMenuEdit.value = item?.[props.primaryKeyField.field]
-    }
-    
-}
 const isOpenConfirmDialog = ref(false)
 function cancelChanges() {
 	isOpenConfirmDialog.value = false;
@@ -115,7 +116,6 @@ function handleDeleteItem() {
 async function handleConfirmDelete(item: Object) {
  try {
         await api.delete(`/items/${props.collectionKey}/${item?.[props.primaryKeyField.field]}`);
-        isShowMenuEdit.value = null;
         emit('deleteItem')
         notify({
             title: `Item ${item.title} has been deleted successfully`
@@ -125,10 +125,6 @@ async function handleConfirmDelete(item: Object) {
             title: error
         });
     }
-}
-function handleEditItem() {
-    emit('editItem')
-    isShowMenuEdit.value = null
 }
 </script>
 
@@ -201,8 +197,19 @@ main {
     padding-bottom: 12px;
     display: flex;
     justify-content: space-between;
+    align-items: end;
 }
-
+.main-content {
+    width: 75%;
+    display: -webkit-box;
+    max-height: 50px;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    -webkit-line-clamp: 2;
+    line-height: 25px;
+}
 .card-icon>.card-icon-inner {
     padding: 0;
     flex-grow: 1;
@@ -238,12 +245,10 @@ main {
     --v-button-background-color: none;
     --v-icon-size: 16px;
     opacity: 0;
+    --v-button-background-color-hover: none !important;
 }
 .card:hover .button-edit-item {
     opacity: 1;
-}
-.show-button-edit-item {
-    opacity: 1 !important;
 }
 .button-edit-item::before {
     content: '';
@@ -254,34 +259,18 @@ main {
     right: 0;
     position: absolute;
     border-radius: 4px;
+
 }
-.menu-edit {
-    position: absolute;
-    top: 55px;
-    right: 17px;
-    background-color: #fff;
-    list-style-type: none;
-    z-index: 10;
-    padding-left: 0;
-    min-width: 130px;
-    border-radius: 4px;
-    display: none;
-} 
-.show-menu-edit {
-    display: block;
+.active {
+    opacity: 1;
+    --v-button-background-color-active: none !important;
 }
-.menu-edit > li {
-    padding: 8px 0;
-    padding-left: 16px;
-    border-bottom: 1px solid #E2E8F0;
-    font-weight: 400;
-    font-size: 14px;
+.list-menu-item {
+    cursor: pointer;
+    margin: 10px;
 }
-.menu-edit > li:hover {
-    color: #4F46E5;
-}
-.menu-edit > li:last-child {
-    border-bottom: unset;
+.list-menu-item:hover {
+    color: var(--project-color)
 }
 .confirm-delete .v-card-title, .confirm-delete .v-card-text  {
     justify-content: center;
