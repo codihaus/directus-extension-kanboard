@@ -28,6 +28,10 @@
                 :value="item?.[layoutOptions?.textField]"
                 format
             ></display-formatted-value>
+            <div class="w-24px h24px">
+                <v-image v-if="avatarUserCreate" class="render-avatar-user-created" :src="partImage(avatarUserCreate)" />
+                <v-icon v-else name="person" />
+            </div>
         </main>
     </section>
 </template>
@@ -59,6 +63,16 @@ const emit = defineEmits([
     'editItem',
     'openChangeLog'
 ])
+const avatarUserCreate = ref(null)
+async function getDataUser() {
+    const res = await api.get('/users/' + props.item.user_created, {
+        params: {
+            fields: ['avatar']
+        },
+    });
+    avatarUserCreate.value = res?.data?.data?.avatar
+}
+getDataUser()
 
 const isShowMenuEdit = ref(null) 
 function handleShowMenuEdit(item: Object) {
@@ -158,11 +172,22 @@ header>.card-title.muted {
     justify-content: stretch;
     align-items: stretch;
 }
+main {
+    display: flex;
+    justify-content: space-between;
+}
 
 .card-icon>.card-icon-inner {
     padding: 0;
     flex-grow: 1;
     text-align: center;
+}
+.render-avatar-user-created {
+    aspect-ratio: 1/1;
+    height: 100%;
+	width: 100%;
+    object-fit: cover;
+    border-radius: 50%;
 }
 .render-thumbnail {
     aspect-ratio: 16/9;
