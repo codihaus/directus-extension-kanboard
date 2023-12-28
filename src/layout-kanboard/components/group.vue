@@ -52,6 +52,8 @@
                         :data-item-id="element[primaryKeyField?.field]"
                         :collectionKey="collectionKey"
                         :primary-key-field="primaryKeyField"
+                        :open-change-log="openChangeLog"
+                        :open-drawer-item-edit="openDrawerItemEdit"
                         @click="handleEditItem(element ,index)"
                         @delete-item="handleDeleteItem"
                         @edit-item="handleEditItem(element ,index)"
@@ -94,7 +96,9 @@ interface Props {
 	field?: string | null;
 	fieldValue: string | null;
 	isRefresh?: boolean;
-
+    openChangeLog?: boolean;
+    openDrawerItemEdit?: boolean;
+    
 	groupCollection?: string | null;
 	groupedItems?: Group[];
 	groupTitle?: string | null;

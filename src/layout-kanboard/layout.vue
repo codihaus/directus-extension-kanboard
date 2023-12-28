@@ -26,6 +26,8 @@
 					:class="{ draggable: group.id !== null }"
 					:primary-key-field="primaryKeyField"
 					:reloadGroup="reloadGroup"
+					:open-change-log="openChangeLog"
+					:open-drawer-item-edit="openDrawerItemEdit"
 					@create-item="handleOpenDrawerCreateItem"
 					@edit-item="handleOpenDrawerEditItem"
 					@open-change-log="handleOpenDrawerChangeLog"

@@ -13,7 +13,7 @@
                 format
                 class="card-title"
             ></display-formatted-value>
-            <v-menu show-arrow>
+            <v-menu show-arrow v-if="isShowMenuCard">
                     <template #activator="{ toggle, active }">
                         <v-button 
                             class="button-edit-item"
@@ -24,10 +24,10 @@
                         <v-icon name="edit" />
                         </v-button>
                     </template>
-                    <v-list @click.stop="$emit('editItem')" class="list-menu-item">
+                    <v-list @click.stop="handleEditItem" class="list-menu-item">
                         <span class="text-14px">Edit Item</span>
                     </v-list>
-                    <v-list @click.stop="$emit('openChangeLog')" class="list-menu-item">
+                    <v-list @click.stop="handleChangLogItem" class="list-menu-item">
                         <span class="text-14px">Change Group</span>
                     </v-list>
                     <v-list @click.stop="handleDeleteItem" class="list-menu-item">
@@ -68,6 +68,7 @@
 </template>
 
 <script setup lang="ts">
+import { watch } from "vue";
 import { Filter } from "@directus/types";
 import { LayoutOptions } from '../types';
 import { ref } from "vue";
@@ -78,6 +79,8 @@ interface Props {
 	layoutOptions?: LayoutOptions;
     primaryKeyField?: Record<string, any> | null;
 	collection?: string;
+    openChangeLog?: boolean;
+    openDrawerItemEdit?: boolean;
     collectionKey?: string;
 	filter?: Filter | null;
 	search?: string | null;
@@ -107,15 +110,38 @@ async function getDataUser() {
 getDataUser()
 
 const isOpenConfirmDialog = ref(false)
-function cancelChanges() {
-	isOpenConfirmDialog.value = false;
+const isShowMenuCard = ref(true)
+function handleEditItem() {
+    emit('editItem')
+    isShowMenuCard.value = false
 }
+watch(()=> props.openDrawerItemEdit, (newValue) => {
+    if(newValue === false) {
+        isShowMenuCard.value = true
+    }
+})
+function handleChangLogItem() {
+    emit('openChangeLog')
+    isShowMenuCard.value = false
+}
+
+watch(()=> props.openChangeLog, (newValue) => {
+    if(newValue === false) {
+        isShowMenuCard.value = true
+    }
+})
 function handleDeleteItem() {
     isOpenConfirmDialog.value = true;
+    isShowMenuCard.value = false
+}
+function cancelChanges() {
+	isOpenConfirmDialog.value = false;
+    isShowMenuCard.value = true
 }
 async function handleConfirmDelete(item: Object) {
  try {
         await api.delete(`/items/${props.collectionKey}/${item?.[props.primaryKeyField.field]}`);
+        isShowMenuCard.value = true
         emit('deleteItem')
         notify({
             title: `Item ${item.title} has been deleted successfully`
