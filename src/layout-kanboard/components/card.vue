@@ -13,9 +13,13 @@
                 format
                 class="card-title"
             ></display-formatted-value>
-            <div class="button-edit" @click.stop="handleShowMenuEdit(item)">
+            <v-button 
+                class="button-edit-item" 
+                :class="{'show-button-edit-item': isShowMenuEdit === item?.[props.primaryKeyField.field]}"
+                @click.stop="handleShowMenuEdit(item)"
+            >
                 <v-icon name="edit" />
-            </div>
+            </v-button>
             <ul class="menu-edit" :class="{'show-menu-edit': isShowMenuEdit === item?.[props.primaryKeyField.field]}">
                 <li @click.stop="handleEditItem">Edit Item</li>
                 <li @click.stop="$emit('openChangeLog')">Change log</li>
@@ -33,6 +37,7 @@
                 <v-icon v-else name="person" />
             </div>
         </main>
+        <!-- confirm delete -->
         <v-dialog :model-value="isOpenConfirmDialog" @esc="cancelChanges()">
             <div class="confirm-delete">
                 <v-card>
@@ -130,19 +135,13 @@ function handleEditItem() {
 .card {
     display: flex;
     flex-flow: column nowrap;
+    gap: 8px;
     flex-grow: 1;
-    gap: 8px;
-    align-items: stretch;
-    cursor: pointer;
-}
-
-.card {
-    display: flex;
-    flex-flow: column nowrap;
-    gap: 8px;
     border-radius: 4px;
     box-shadow: 0px 1px 4px 0px rgba(var(--card-shadow-color), 0.05);
     background-color: var(--theme--background);
+    align-items: stretch;
+    cursor: pointer;
 }
 
 .card>* {
@@ -195,6 +194,7 @@ header>.card-title.muted {
     align-items: stretch;
 }
 main {
+    padding-bottom: 12px;
     display: flex;
     justify-content: space-between;
 }
@@ -221,27 +221,28 @@ main {
 .card-image-fill {
     object-fit: cover !important;
 }
-.button-edit {
-    cursor: pointer;
+.button-edit-item {
     position: absolute;
-    right: 16px;
-    top: 16px;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    right: 25px;
+    top: 20px;
+    --v-button-min-width:32px;
+    --v-button-width: 32px;
+    --v-button-height: 32px;
+    padding: 0;
     color: #fff;
     font-size: 16px;
     border-radius: 4px;
-}
-.button-edit > .v-icon {
-    width: 16px;
-    min-width: 16px;
-    height: 16px;
+    --v-button-background-color: none;
     --v-icon-size: 16px;
+    opacity: 0;
 }
-.button-edit::before {
+.card:hover .button-edit-item {
+    opacity: 1;
+}
+.show-button-edit-item {
+    opacity: 1 !important;
+}
+.button-edit-item::before {
     content: '';
     width: 100%;
     height: 100%;
