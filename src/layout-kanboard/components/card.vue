@@ -19,7 +19,7 @@
             <ul class="menu-edit" :class="{'show-menu-edit': isShowMenuEdit === item?.[props.primaryKeyField.field]}">
                 <li @click.stop="handleEditItem">Edit Item</li>
                 <li @click.stop="$emit('openChangeLog')">Change log</li>
-                <li @click.stop="handleDeleteItem(item)">Delete</li>
+                <li @click.stop="handleDeleteItem()">Delete</li>
             </ul>
         </header>
         <main v-if="layoutOptions?.cardContentTemplate">
@@ -33,6 +33,20 @@
                 <v-icon v-else name="person" />
             </div>
         </main>
+        <v-dialog :model-value="isOpenConfirmDialog" @esc="cancelChanges()">
+            <div class="confirm-delete">
+                <v-card>
+                    <v-card-title>Are you sure</v-card-title>
+                    <v-card-text>
+                        Are you sure you want to Delete this card?. You can’t undo this action
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-button secondary @click="cancelChanges()">Cancel</v-button>
+                        <v-button class="button-confirm-delete" @click="handleConfirmDelete(item)">Delete</v-button>
+                    </v-card-actions>
+                </v-card>
+            </div>
+        </v-dialog>
     </section>
 </template>
 
@@ -63,6 +77,7 @@ const emit = defineEmits([
     'editItem',
     'openChangeLog'
 ])
+
 const avatarUserCreate = ref(null)
 async function getDataUser() {
     const res = await api.get('/users/' + props.item.user_created, {
@@ -84,8 +99,15 @@ function handleShowMenuEdit(item: Object) {
     }
     
 }
-async function handleDeleteItem(item: Object) {
-    try {
+const isOpenConfirmDialog = ref(false)
+function cancelChanges() {
+	isOpenConfirmDialog.value = false;
+}
+function handleDeleteItem() {
+    isOpenConfirmDialog.value = true;
+}
+async function handleConfirmDelete(item: Object) {
+ try {
         await api.delete(`/items/${props.collectionKey}/${item?.[props.primaryKeyField.field]}`);
         isShowMenuEdit.value = null;
         emit('deleteItem')
@@ -256,5 +278,18 @@ main {
 }
 .menu-edit > li:last-child {
     border-bottom: unset;
+}
+.confirm-delete .v-card-title, .confirm-delete .v-card-text  {
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 600;
+}
+.confirm-delete .v-card-text  {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 400;
+}
+.button-confirm-delete {
+    --v-button-background-color: #EF4444
 }
 </style>
