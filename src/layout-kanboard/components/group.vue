@@ -43,7 +43,7 @@
                 </template>
             </draggable>
         </main>
-        {{ totalPages }}
+        {{totalPages}}
         <div
             v-if="totalPages > 1"
             class="pagination mt-auto"
@@ -307,5 +307,8 @@ main {
 }
 .menu-edit > li:last-child {
     border-bottom: unset;
+}
+.v-pagination {
+    justify-content: center;
 }
 </style>
