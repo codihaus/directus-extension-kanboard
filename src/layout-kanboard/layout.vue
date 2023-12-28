@@ -30,7 +30,7 @@
 					@edit-item="handleOpenDrawerEditItem"
 					@open-change-log="handleOpenDrawerChangeLog"
 					@click-item="handleOpenDrawerEditItem"
-					@delete-group="deleteGroup(group.id)"
+					@delete-group="handDeleteGroup(group.id)"
 					@edit-group="openEditGroup(group)"
 				/>
 			</template>
@@ -125,7 +125,21 @@
 				</div>
 			</div>
 		</v-drawer>
-
+		<!-- confirm delete group -->
+		<v-dialog :model-value="isOpenDialogConfirmDeleteGroup" @esc="cancelDeleteGroup()">
+            <div class="confirm-delete">
+                <v-card>
+                    <v-card-title>Are you sure</v-card-title>
+                    <v-card-text>
+                        Are you sure you want to Delete this group?. You can’t undo this action
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-button secondary @click="cancelDeleteGroup()">Cancel</v-button>
+                        <v-button class="button-confirm-delete" @click="handleConfirmDeleteGroup">Delete</v-button>
+                    </v-card-actions>
+                </v-card>
+            </div>
+        </v-dialog>
 
 		<!-- drawer-item, changelog popup -->
 	</div>
@@ -194,10 +208,34 @@ function openEditGroup(group: Group) {
 	editDialogOpen.value = group.id;
 	editTitle.value = group.title;
 }
-
 function cancelChanges() {
 	editDialogOpen.value = null;
 	editTitle.value = '';
+}
+
+const isOpenDialogConfirmDeleteGroup = ref(false)
+const valueIdDeleteGroup = ref(null)
+function handDeleteGroup(id: string) {
+	isOpenDialogConfirmDeleteGroup.value = true
+	valueIdDeleteGroup.value = id
+}
+function cancelDeleteGroup() {
+	isOpenDialogConfirmDeleteGroup.value = false
+}
+function handleConfirmDeleteGroup() {
+	try {
+		props.deleteGroup(valueIdDeleteGroup.value);
+		notify({
+            title: `${valueIdDeleteGroup.value} has been deleted`
+        });
+	}catch(error) {
+		notify({
+            title: error
+        });
+	}
+	props.deleteGroup(valueIdDeleteGroup.value);
+	isOpenDialogConfirmDeleteGroup.value = false
+	
 }
 
 function saveChanges() {
@@ -438,5 +476,18 @@ const choices = computed<{ text: string }[]>(
 	padding-left: 12px;
 	border-radius: 4px;
 	cursor: pointer;
+}
+.confirm-delete .v-card-title, .confirm-delete .v-card-text  {
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 600;
+}
+.confirm-delete .v-card-text  {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 400;
+}
+.button-confirm-delete {
+    --v-button-background-color: #EF4444
 }
 </style>
