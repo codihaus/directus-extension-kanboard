@@ -143,6 +143,9 @@ function handleEditItem() {
     align-items: stretch;
     cursor: pointer;
 }
+.card:hover {
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+}
 
 .card>* {
     padding-left: 16px;
@@ -228,7 +231,6 @@ main {
     --v-button-min-width:32px;
     --v-button-width: 32px;
     --v-button-height: 32px;
-    padding: 0;
     color: #fff;
     font-size: 16px;
     border-radius: 4px;
@@ -238,6 +240,9 @@ main {
 }
 .card:hover .button-edit-item {
     opacity: 1;
+}
+.button-edit-item > button {
+    padding: unset !important;
 }
 .show-button-edit-item {
     opacity: 1 !important;
