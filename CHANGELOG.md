@@ -1,6 +1,36 @@
 # Changelog
 
 
+## v0.0.6
+
+[compare changes](https://github.com/codihaus/directus-extension-kanboard/compare/v0.0.5...v0.0.6)
+
+### 🩹 Fixes
+
+- Duplicate when click item ([5345aa0](https://github.com/codihaus/directus-extension-kanboard/commit/5345aa0))
+
+### ❤️ Contributors
+
+- Hoang-Cdh
+
+## v0.0.5
+
+[compare changes](https://github.com/codihaus/directus-extension-kanboard/compare/v0.0.4...v0.0.5)
+
+### 💅 Refactors
+
+- Edit display card #1 ([#1](https://github.com/codihaus/directus-extension-kanboard/issues/1))
+
+### 🏡 Chore
+
+- **script:** Import ExtensionManifest ([1d056e4](https://github.com/codihaus/directus-extension-kanboard/commit/1d056e4))
+- Remove dist ignore ([9f1c57e](https://github.com/codihaus/directus-extension-kanboard/commit/9f1c57e))
+
+### ❤️ Contributors
+
+- Hoang-Cdh 
+- CodiHaus <contact@codihaus.com>
+
 ## v0.0.4
 
 [compare changes](https://github.com/codihaus/directus-extension-kanboard/compare/v0.0.3...v0.0.4)
