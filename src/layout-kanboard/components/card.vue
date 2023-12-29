@@ -35,10 +35,9 @@
                     </v-list>
                 </v-menu>
         </header>
-        <main v-if="layoutOptions?.cardContentTemplate">
+        <main>
             <div class="main-content">
                 <display-formatted-value
-
                     type="text"
                     :value="item?.[layoutOptions?.textField]"
                     format
@@ -158,8 +157,9 @@ async function handleConfirmDelete(item: Object) {
 .card {
     display: flex;
     flex-flow: column nowrap;
-    gap: 8px;
+    gap: 12px;
     flex-grow: 1;
+    min-height: 100%;
     border-radius: 4px;
     box-shadow: 0px 1px 4px 0px rgba(var(--card-shadow-color), 0.05);
     background-color: var(--theme--background);
@@ -222,11 +222,14 @@ header>.card-title.muted {
 main {
     padding-bottom: 12px;
     display: flex;
-    justify-content: space-between;
+    flex-wrap: wrap;
+    justify-content: end;
     align-items: end;
 }
 .main-content {
-    width: 75%;
+    width: 100%;
+    flex-wrap: wrap;
+
     display: -webkit-box;
     max-height: 50px;
     -webkit-box-orient: vertical;
@@ -260,8 +263,8 @@ main {
 }
 .button-edit-item {
     position: absolute;
-    right: 25px;
-    top: 20px;
+    right: 15px;
+    top: 18px;
     --v-button-min-width:32px;
     --v-button-width: 32px;
     --v-button-height: 32px;

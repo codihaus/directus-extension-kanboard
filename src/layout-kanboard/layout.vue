@@ -1,6 +1,5 @@
 <template>
 	<div class="kanboard">
-		
 		<draggable
 			:model-value="groupedItems"
 			group="groups"
@@ -47,7 +46,8 @@
 					{{ editDialogOpen === '+' ? t('layouts.kanban.add_group') : t('layouts.kanban.edit_group') }}
 				</v-card-title>
 				<v-card-text>
-					<v-input v-model="editTitle" :placeholder="t('layouts.kanban.add_group_placeholder')" />
+					<v-input v-model="editTitle" :placeholder="t('layouts.kanban.add_group_placeholder')" @blur="checkRequiredCreateGroup"/>
+					<span v-if="showErrorCreateGroup" class="text-14px text-[var(--theme--danger)]">Need to enter the group's title</span>
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="cancelChanges()">{{ t('cancel') }}</v-button>
@@ -205,8 +205,6 @@ const api = useApi();
 const editDialogOpen = ref<string | number | null>(null);
 const editTitle = ref('');
 function openEditGroup(group: Group) {
-	console.log('group',props.groupedItems);
-	
 	editDialogOpen.value = group.id;
 	editTitle.value = group.title;
 }
@@ -228,6 +226,9 @@ function handleConfirmDeleteGroup() {
 	try {
 		props.deleteGroup(valueIdDeleteGroup.value);
 		notify({
+			// text: t('export_started_copy'),
+			// type: 'success',
+			// icon: 'file_download',
             title: `${valueIdDeleteGroup.value} has been deleted`
         });
 	}catch(error) {
@@ -239,16 +240,33 @@ function handleConfirmDeleteGroup() {
 	isOpenDialogConfirmDeleteGroup.value = false
 	
 }
+const showErrorCreateGroup = ref(false)
+
+function checkRequiredCreateGroup() {
+	if(editTitle.value) {
+		showErrorCreateGroup.value = false
+	}
+	else {
+		showErrorCreateGroup.value = true
+	}
+	console.log('showErrorCreateGroup.value',showErrorCreateGroup.value);
+	console.log('editTitle',editTitle.value);
+	
+	
+}
 
 function saveChanges() {
-	console.log('editDialogOpen',editDialogOpen);
-	if (editDialogOpen.value === '+') {
-		props.addGroup(editTitle.value);
-	} else if (editDialogOpen.value) {
-		props.editGroup(editDialogOpen.value, editTitle.value);
+	if(!editTitle.value) {
+		showErrorCreateGroup.value = true
+	}else {
+		if (editDialogOpen.value === '+') {
+			props.addGroup(editTitle.value);
+		} else if (editDialogOpen.value) {
+			props.editGroup(editDialogOpen.value, editTitle.value);
+		}
+		editDialogOpen.value = null;
+		editTitle.value = '';
 	}
-	editDialogOpen.value = null;
-	editTitle.value = '';
 }
 const openDrawerCreateItem = ref(false)
 const openDrawerItemEdit = ref(false)
