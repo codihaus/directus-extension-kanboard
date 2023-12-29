@@ -441,7 +441,7 @@ const choices = computed<{ text: string }[]>(
 			flex-direction: column;
 			width: 320px;
 			padding: 8px 0;
-			background-color: var(--theme--background-normal);
+			background-color: var(--theme--background-subdued);
 			border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 			border-radius: var(--theme--border-radius);
 			margin-right: 20px;

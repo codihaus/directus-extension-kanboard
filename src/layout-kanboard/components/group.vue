@@ -259,7 +259,7 @@ function handleShowMenuGroup() {
 </script>
 <style scoped>
 section {
-    background-color: var(--theme--background-normal);
+    background-color: #000;
     border-radius: var(--theme--border-radius);
     flex: 0 0 320px;
     display: flex;
@@ -268,7 +268,7 @@ section {
 }
 
 header {
-    padding: 16px 16px 0 16px;
+    padding: 16px;
     display: flex;
     justify-content: space-between;
 }
@@ -282,6 +282,7 @@ main {
 }
 .cards {
     padding: 16px;
+    padding-top: 0;
     gap: 10px;
     display: flex;
     flex-flow: column nowrap;
