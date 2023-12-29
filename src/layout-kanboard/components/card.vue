@@ -35,10 +35,9 @@
                     </v-list>
                 </v-menu>
         </header>
-        <main v-if="layoutOptions?.cardContentTemplate">
+        <main>
             <div class="main-content">
                 <display-formatted-value
-
                     type="text"
                     :value="item?.[layoutOptions?.textField]"
                     format
@@ -160,6 +159,7 @@ async function handleConfirmDelete(item: Object) {
     flex-flow: column nowrap;
     gap: 8px;
     flex-grow: 1;
+    min-height: 100%;
     border-radius: 4px;
     box-shadow: 0px 1px 4px 0px rgba(var(--card-shadow-color), 0.05);
     background-color: var(--theme--background);

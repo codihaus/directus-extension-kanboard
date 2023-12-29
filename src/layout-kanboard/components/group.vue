@@ -43,6 +43,7 @@
                 item-key="id"
                 :data-group="fieldValue"
                 group="cards"
+                :animation="150"
                 @change="change"
                 >
                 <template #item="{ element, index }">
