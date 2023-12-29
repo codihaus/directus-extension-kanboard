@@ -24,6 +24,7 @@ const props = withDefaults(
 		tagsField?: string | null;
 		userField?: string | null;
 		showUngrouped: boolean;
+		showIndex: boolean;
 		enableInfiniteScroll: boolean;
 	}>(),
 	{
@@ -38,6 +39,7 @@ const props = withDefaults(
 		tagsField: null,
 		userField: null,
 		showUngrouped: true,
+		showIndex: true,
 		enableInfiniteScroll: false,
 	},
 );
@@ -53,6 +55,7 @@ const emit = defineEmits([
 	'update:tagsField',
 	'update:userField',
 	'update:showUngrouped',
+	'update:showIndex'
 ]);
 
 const { t } = useI18n();
@@ -62,6 +65,7 @@ const titleFieldSync = useSync(props, 'titleField', emit);
 const cropSync = useSync(props, 'crop', emit);
 const textFieldSync = useSync(props, 'textField', emit);
 const showUngroupedSync = useSync(props, 'showUngrouped', emit);
+const showIndexSync = useSync(props, 'showIndex', emit);
 const groupFieldSync = useSync(props, 'groupField', emit);
 const groupTitleSync = useSync(props, 'groupTitle', emit);
 const dateFieldSync = useSync(props, 'dateField', emit);
@@ -159,6 +163,10 @@ const userFieldSync = useSync(props, 'userField', emit);
 			<div class="field">
 				<div class="type-label">{{ t('layouts.kanban.image_fit') }}</div>
 				<v-checkbox v-model="cropSync" block :label="t('layouts.kanban.crop')" />
+			</div>
+		<div class="field">
+				<div class="type-label">{{ 'Show Index' }}</div>
+				<v-checkbox v-model="showIndexSync" block label="Show" />
 			</div>
 
 			<div class="field">

@@ -117,6 +117,7 @@ export default defineLayout({
 			tagsField,
 			userField,
 			showUngrouped,
+			showIndex,
 			enableInfiniteScroll,
 			userFieldJunction,
 			userFieldType,
@@ -222,6 +223,7 @@ export default defineLayout({
 			const titleField = createViewOption<string | null>('titleField', fieldGroups.value.title[0]?.field ?? null);
 			const textField = createViewOption<string | null>('textField', fieldGroups.value.text[0]?.field ?? null);
 			const showUngrouped = createViewOption<boolean>('showUngrouped', false);
+			const showIndex = createViewOption<boolean>('showIndex', false);
 			const enableInfiniteScroll = createViewOption<boolean>('enableInfiniteScroll', false);
 			const imageSource = createViewOption<string | null>('imageSource', fieldGroups.value.file[0]?.field ?? null);
 			const crop = createViewOption<boolean>('crop', true);
@@ -260,6 +262,7 @@ export default defineLayout({
 				tagsField,
 				userField,
 				showUngrouped,
+				showIndex,
 				enableInfiniteScroll,
 				userFieldJunction,
 				userFieldType,
@@ -594,6 +597,7 @@ export default defineLayout({
 			editGroup,
 			deleteGroup,
 			showUngrouped,
+			showIndex,
 			enableInfiniteScroll,
 			// limitWarning,
 			userFieldType,

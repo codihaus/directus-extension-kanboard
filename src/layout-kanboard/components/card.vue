@@ -223,13 +223,13 @@ main {
     padding-bottom: 12px;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: end;
     align-items: end;
 }
 .main-content {
     width: 100%;
     flex-wrap: wrap;
-    justify-content: end;
+
     display: -webkit-box;
     max-height: 50px;
     -webkit-box-orient: vertical;

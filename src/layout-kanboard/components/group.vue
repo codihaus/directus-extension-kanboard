@@ -3,7 +3,7 @@
         <header>
             <div class="w-55% flex gap-5px items-center">
                 <!-- <component :is="`display-${field?.meta?.display}`" v-bind="field?.meta?.display_options" :type="field?.type" :value="fieldValue" /> -->
-                <span>{{ groupIndex + 1 }}</span>
+                <span v-if="layoutOptions?.showIndex">{{ groupIndex + 1 }} -</span>
                 <div class="capitalize" @click="valueOpenEditGroupTitle = true">{{ groupTitle }}</div>
             </div>
             <div class="flex relative">

@@ -11,6 +11,7 @@ export type LayoutOptions = {
 	imageSource?: string;
 	crop: boolean;
 	showUngrouped: boolean;
+	showIndex: boolean;
 };
 
 export type LayoutQuery = {
