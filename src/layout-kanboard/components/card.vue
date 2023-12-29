@@ -265,7 +265,7 @@ main {
     --v-button-min-width:32px;
     --v-button-width: 32px;
     --v-button-height: 32px;
-    color: #fff;
+    color: var(--foreground-inverted);
     font-size: 16px;
     border-radius: 4px;
     --v-button-background-color: none;
@@ -281,7 +281,7 @@ main {
     width: 100%;
     height: 100%;
     opacity: 0.4;
-    background-color: #111827;
+    background-color: var(--overlay-color);
     right: 0;
     position: absolute;
     border-radius: 4px;
@@ -309,6 +309,8 @@ main {
     font-weight: 400;
 }
 .button-confirm-delete {
-    --v-button-background-color: #EF4444
+    --v-button-background-color: var(--theme--danger);
+    --v-button-background-color-hover: var(--danger-125);
+    --v-button-background-color-active: var(--theme--danger);
 }
 </style>

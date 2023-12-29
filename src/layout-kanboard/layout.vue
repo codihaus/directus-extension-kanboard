@@ -74,14 +74,14 @@
 				<div 
 					@click="handleNextItem"
 					:class="{'disable-button-next-pre' : disableNextItem}"
-					class="bg-indigo-50 w-44px h-44px flex flex-col items-center justify-center text-#6366F1 rounded-50% hover:bg-indigo-200 cursor-pointer"
+					class="bg-[var(--blue-25)] w-44px h-44px flex flex-col items-center justify-center text-[var(--project-color)] rounded-50% hover:bg-[var(--blue-50)] cursor-pointer"
 				>
 					<v-icon name="keyboard_arrow_down"/>
 				</div>
 				<div 
 					@click="handlePreItem"
 					:class="{ 'disable-button-next-pre' : disablePrevItem}"
-					class="bg-indigo-50 w-44px h-44px flex flex-col items-center justify-center text-#6366F1 rounded-50% hover:bg-indigo-200 cursor-pointer"
+					class="bg-[var(--blue-25)] w-44px h-44px flex flex-col items-center justify-center text-[var(--project-color)] rounded-50% hover:bg-[var(--blue-50)] cursor-pointer"
 				>
 					<v-icon name="keyboard_arrow_up"/>
 				</div>
@@ -122,8 +122,8 @@
 			<div class="px-40px">
 				<div v-for="item in detailRevisionDataChange" :key="item.key" class="item-detail-revision text-15px">
 					<div class="text-16px font-600 mb-8px">{{ convertToDisplayName(item?.key) }} </div>
-					<div class="px-10px py-5px text-red-600 bg-red-100">- <span class="ml-20px">{{ item?.newValue }}</span></div>
-					<div class="px-10px py-5px text-green-600 bg-green-100">- <span class="ml-20px">{{ item?.oldValue }}</span></div>
+					<div class="px-10px py-5px text-[var(--theme--danger)] bg-[var(--red-10)]">- <span class="ml-20px">{{ item?.newValue }}</span></div>
+					<div class="px-10px py-5px text-[var(--theme--success)] bg-[var(--green-10)]">- <span class="ml-20px">{{ item?.oldValue }}</span></div>
 				</div>
 			</div>
 		</v-drawer>
@@ -439,7 +439,7 @@ const choices = computed<{ text: string }[]>(
 .disable-button-next-pre {
 	pointer-events: none;
 	cursor: not-allowed !important;
-	background: #e5e7eb;
+	background: var(--blue-10);
 	opacity: 0.5;
 }
 .item-change-log:first-child {
@@ -452,7 +452,7 @@ const choices = computed<{ text: string }[]>(
 	padding: 0 40px;
 }
 .item-change-log:hover {
-	background-color: #f0f9ff;
+	background-color: var(--blue-10);
 }
 .render-thumbnail {
     aspect-ratio: 16/9;
@@ -473,7 +473,7 @@ const choices = computed<{ text: string }[]>(
 	height: 44px;
 	display: flex;
 	align-items: center;
-	background-color: #E5E7EB;
+	background-color: var(--background-normal-alt);
 	padding: 14px 0;
 	padding-left: 12px;
 	border-radius: 4px;
@@ -490,6 +490,8 @@ const choices = computed<{ text: string }[]>(
     font-weight: 400;
 }
 .button-confirm-delete {
-    --v-button-background-color: #EF4444
+	--v-button-background-color: var(--theme--danger);
+    --v-button-background-color-hover: var(--danger-125);
+    --v-button-background-color-active: var(--theme--danger);
 }
 </style>

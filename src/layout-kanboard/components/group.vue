@@ -25,11 +25,11 @@
                             <v-icon name="more_vert" />
                         </v-button>
                     </template>
-                    <v-list @click="emit('editGroup')" class="hover:text-indigo-600 list-menu-item">
+                    <v-list @click="emit('editGroup')" class="hover:text-[var(--project-color)] list-menu-item">
                         <v-icon name="edit" class="icon-menu"/> 
                         <span class="text-14px ml-5px">Edit Group</span>
                     </v-list>
-                    <v-list @click="$emit('deleteGroup')" class="hover:text-red-500 list-menu-item">
+                    <v-list @click="$emit('deleteGroup')" class="hover:text-[var(--theme--danger)] list-menu-item">
                         <v-icon name="delete" class="icon-menu"/> 
                         <span class="text-14px ml-5px">Delete Group</span>
                     </v-list>
@@ -300,7 +300,7 @@ main {
     --v-button-width: 32px;
     --v-button-height: 32px;
     --v-button-background-color: none;
-    --v-icon-color: #000;
+    --v-icon-color: var(--background-inverted);
     --v-button-background-color-hover: none;
     --v-button-background-color-active: none;
 }
