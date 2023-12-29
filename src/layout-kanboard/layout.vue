@@ -1,6 +1,5 @@
 <template>
 	<div class="kanboard">
-		
 		<draggable
 			:model-value="groupedItems"
 			group="groups"
