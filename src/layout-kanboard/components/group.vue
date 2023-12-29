@@ -3,19 +3,37 @@
         <header>
             <div class="w-55% flex gap-5px items-center">
                 <!-- <component :is="`display-${field?.meta?.display}`" v-bind="field?.meta?.display_options" :type="field?.type" :value="fieldValue" /> -->
-                <div v-if="!valueOpenEditGroupTitle" class="cursor-pointer capitalize" @click="valueOpenEditGroupTitle = true">{{ groupTitle }}</div>
-                <div v-if="valueOpenEditGroupTitle" class="edit-title-group flex items-center">
-                    <v-input v-model="valueGroupTitle"/>
-                    <div class="text-12px text-white ml-5px px-5px py-2px bg-indigo-500 rounded-4px" @click="handleSaveEditGroup( fieldValue, valueGroupTitle)">Save</div>
-                </div>
+                <span>{{ groupIndex + 1 }}</span>
+                <div class="capitalize" @click="valueOpenEditGroupTitle = true">{{ groupTitle }}</div>
             </div>
-            <div class="flex">
-                <div class="delete_group" @click="$emit('deleteGroup')">
-                    <v-icon name="delete" />
-                </div>
-                <div class="create_item" @click="$emit('createItem', fieldValue)">
+            <div class="flex relative">
+                <v-button 
+                    class="button-header" 
+                    @click="$emit('createItem', fieldValue)"
+                    icon
+                >
                     <v-icon name="add" />
-                </div>
+                </v-button>
+                <v-menu show-arrow>
+                    <template #activator="{ toggle, active }">
+                        <v-button 
+                            class="button-header"
+                            :class="{ active }"
+                            @click="toggle" 
+                            icon
+                        >
+                            <v-icon name="more_vert" />
+                        </v-button>
+                    </template>
+                    <v-list @click="emit('editGroup')" class="hover:text-[var(--project-color)] list-menu-item">
+                        <v-icon name="edit" class="icon-menu"/> 
+                        <span class="text-14px ml-5px">Edit Group</span>
+                    </v-list>
+                    <v-list @click="$emit('deleteGroup')" class="hover:text-[var(--theme--danger)] list-menu-item">
+                        <v-icon name="delete" class="icon-menu"/> 
+                        <span class="text-14px ml-5px">Delete Group</span>
+                    </v-list>
+                </v-menu>
             </div>
         </header>
         <main class="overflow-y-auto">
@@ -27,7 +45,6 @@
                 group="cards"
                 @change="change"
                 >
-                                        <!-- @click="handleEditItem(element ,index)" -->
                 <template #item="{ element, index }">
                     <card
                         :layout-options="layoutOptions"
@@ -35,6 +52,9 @@
                         :data-item-id="element[primaryKeyField?.field]"
                         :collectionKey="collectionKey"
                         :primary-key-field="primaryKeyField"
+                        :open-change-log="openChangeLog"
+                        :open-drawer-item-edit="openDrawerItemEdit"
+                        @click="handleEditItem(element ,index)"
                         @delete-item="handleDeleteItem"
                         @edit-item="handleEditItem(element ,index)"
                         @open-change-log="$emit('openChangeLog', element)"
@@ -76,10 +96,13 @@ interface Props {
 	field?: string | null;
 	fieldValue: string | null;
 	isRefresh?: boolean;
-
+    openChangeLog?: boolean;
+    openDrawerItemEdit?: boolean;
+    
 	groupCollection?: string | null;
 	groupedItems?: Group[];
 	groupTitle?: string | null;
+    groupIndex?: number | null;
 	changeGroupSort: (event: ChangeEvent<Group>) => void;
 	addGroup: (title: string) => Promise<void>;
 	editGroup: (id: string | number, title: string) => Promise<void>;
@@ -120,7 +143,6 @@ const emit = defineEmits([
     'deleteGroup',
     'editGroup'
 ])
-const valueGroupTitle = ref(props.groupTitle)
 const valueOpenEditGroupTitle = ref(false)
 const {
     primaryKeyField,
@@ -229,10 +251,9 @@ function handleDeleteItem () {
 function handleEditItem (item: Item, index: number) {
     emit('editItem',items.value, item, index)
 }
-function handleSaveEditGroup(id: string | number, value: string){
-    emit('editGroup', id, value)
-    
-    valueOpenEditGroupTitle.value = false
+const iShowMenuGroup = ref(false)
+function handleShowMenuGroup() {
+    iShowMenuGroup.value = true
 }
 </script>
 <style scoped>
@@ -273,5 +294,24 @@ main {
 
 .cards>*:last-child {
     flex-grow: 1;
+}
+.button-header {
+    --v-button-min-width:32px;
+    --v-button-width: 32px;
+    --v-button-height: 32px;
+    --v-button-background-color: none;
+    --v-icon-color: var(--background-inverted);
+    --v-button-background-color-hover: none;
+    --v-button-background-color-active: none;
+}
+.list-menu-item {
+    cursor: pointer;
+    margin: 8px;
+}
+.icon-menu {
+    --v-icon-size: 16px;
+}
+.v-pagination {
+    justify-content: center;
 }
 </style>

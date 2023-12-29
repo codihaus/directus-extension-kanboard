@@ -9,6 +9,7 @@ import LayoutComponent from './layout.vue';
 import Options from "./options.vue";
 import Actions from "./actions.vue";
 
+
 export default defineLayout({
 	id: 'cdh-kanboard',
 	name: 'Kanboard',
@@ -39,7 +40,7 @@ export default defineLayout({
 		const { sort, limit, page, fields } = useLayoutQuery();
 
 		const { fieldGroups } = useFilterFields(fieldsInCollection, {
-			title: (field) => field.type === 'string',
+			title: (field) => field.type === 'string' || field.type === 'text',
 			text: (field) => field.type === 'string' || field.type === 'text',
 			tags: (field) => field.type === 'json' || field.type === 'csv',
 			date: (field) => ['date', 'time', 'dateTime', 'timestamp'].includes(field.type),
@@ -395,6 +396,7 @@ export default defineLayout({
 					if (!selectedGroup.value) return;
 					
 					const updatedChoices = selectedGroup.value?.meta?.options?.choices 
+					
 					updatedChoices.push({text: title, value: title.replace(/\s+/g, '_') })
 					await fieldsStore.updateField(selectedGroup.value.collection, selectedGroup.value.field, {
 						meta: { options: { choices: updatedChoices } },
@@ -420,6 +422,7 @@ export default defineLayout({
 								return {
 									...choice,
 									text: title,
+									value: title.replace(/\s+/g, '_')
 								};
 							}
 
@@ -429,7 +432,7 @@ export default defineLayout({
 
 					await fieldsStore.updateField(selectedGroup.value.collection, selectedGroup.value.field, {
 						meta: { options: { choices: updatedChoices } },
-					});
+					});					
 				}
 
 				await getGroups();

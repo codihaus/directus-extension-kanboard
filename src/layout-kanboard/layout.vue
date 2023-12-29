@@ -1,5 +1,6 @@
 <template>
 	<div class="kanboard">
+		
 		<draggable
 			:model-value="groupedItems"
 			group="groups"
@@ -10,10 +11,11 @@
 			:class="{ sortable: groupsSortField !== null }"
 			@change="changeGroupSort"
 		>
-			<template #item="{ element: group }">
+			<template #item="{ element: group, index: index }">
 				<group
 					:key="group.title"
 					:group-title="group.title"
+					:group-index="index"
 					:field="field"
 					:field-value="group.id"
 					:collection="collectionKey"
@@ -24,12 +26,14 @@
 					:class="{ draggable: group.id !== null }"
 					:primary-key-field="primaryKeyField"
 					:reloadGroup="reloadGroup"
+					:open-change-log="openChangeLog"
+					:open-drawer-item-edit="openDrawerItemEdit"
 					@create-item="handleOpenDrawerCreateItem"
 					@edit-item="handleOpenDrawerEditItem"
 					@open-change-log="handleOpenDrawerChangeLog"
 					@click-item="handleOpenDrawerEditItem"
-					@delete-group="deleteGroup(group.id)"
-					@edit-group="handleEditGroup"
+					@delete-group="handDeleteGroup(group.id)"
+					@edit-group="openEditGroup(group)"
 				/>
 			</template>
 		</draggable>
@@ -70,14 +74,14 @@
 				<div 
 					@click="handleNextItem"
 					:class="{'disable-button-next-pre' : disableNextItem}"
-					class="bg-indigo-50 w-44px h-44px flex flex-col items-center justify-center text-#6366F1 rounded-50% hover:bg-indigo-200 cursor-pointer"
+					class="bg-[var(--blue-25)] w-44px h-44px flex flex-col items-center justify-center text-[var(--project-color)] rounded-50% hover:bg-[var(--blue-50)] cursor-pointer"
 				>
 					<v-icon name="keyboard_arrow_down"/>
 				</div>
 				<div 
 					@click="handlePreItem"
 					:class="{ 'disable-button-next-pre' : disablePrevItem}"
-					class="bg-indigo-50 w-44px h-44px flex flex-col items-center justify-center text-#6366F1 rounded-50% hover:bg-indigo-200 cursor-pointer"
+					class="bg-[var(--blue-25)] w-44px h-44px flex flex-col items-center justify-center text-[var(--project-color)] rounded-50% hover:bg-[var(--blue-50)] cursor-pointer"
 				>
 					<v-icon name="keyboard_arrow_up"/>
 				</div>
@@ -118,12 +122,26 @@
 			<div class="px-40px">
 				<div v-for="item in detailRevisionDataChange" :key="item.key" class="item-detail-revision text-15px">
 					<div class="text-16px font-600 mb-8px">{{ convertToDisplayName(item?.key) }} </div>
-					<div class="px-10px py-5px text-red-600 bg-red-100">- <span class="ml-20px">{{ item?.newValue }}</span></div>
-					<div class="px-10px py-5px text-green-600 bg-green-100">- <span class="ml-20px">{{ item?.oldValue }}</span></div>
+					<div class="px-10px py-5px text-[var(--theme--danger)] bg-[var(--red-10)]">- <span class="ml-20px">{{ item?.newValue }}</span></div>
+					<div class="px-10px py-5px text-[var(--theme--success)] bg-[var(--green-10)]">- <span class="ml-20px">{{ item?.oldValue }}</span></div>
 				</div>
 			</div>
 		</v-drawer>
-
+		<!-- confirm delete group -->
+		<v-dialog :model-value="isOpenDialogConfirmDeleteGroup" @esc="cancelDeleteGroup()">
+            <div class="confirm-delete">
+                <v-card>
+                    <v-card-title>Are you sure</v-card-title>
+                    <v-card-text>
+                        Are you sure you want to Delete this group?. You can’t undo this action
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-button secondary @click="cancelDeleteGroup()">Cancel</v-button>
+                        <v-button class="button-confirm-delete" @click="handleConfirmDeleteGroup">Delete</v-button>
+                    </v-card-actions>
+                </v-card>
+            </div>
+        </v-dialog>
 
 		<!-- drawer-item, changelog popup -->
 	</div>
@@ -150,7 +168,6 @@ interface Props {
 	primaryKeyField?: Record<string, any> | null;
 	filter?: Filter | null;
 	search?: string | null;
-
 	groupCollection?: string | null;
 	groupedItems?: Group[];
 	groupTitle?: string | null;
@@ -187,37 +204,52 @@ const { t } = useI18n();
 const api = useApi();
 const editDialogOpen = ref<string | number | null>(null);
 const editTitle = ref('');
-// function openEditGroup(group: Group) {
+function openEditGroup(group: Group) {
+	console.log('group',props.groupedItems);
 	
-// 	editDialogOpen.value = group.id;
-// 	editTitle.value = group.title;
-// }
-
+	editDialogOpen.value = group.id;
+	editTitle.value = group.title;
+}
 function cancelChanges() {
 	editDialogOpen.value = null;
 	editTitle.value = '';
 }
 
-function saveChanges() {
-	if(props.isRelational) {
-		if (editDialogOpen.value === '+') {
-			props.addGroup(editTitle.value);
-		} else if (editDialogOpen.value) {
-			props.editGroup(editDialogOpen.value, editTitle.value);
-		}
+const isOpenDialogConfirmDeleteGroup = ref(false)
+const valueIdDeleteGroup = ref(null)
+function handDeleteGroup(id: string) {
+	isOpenDialogConfirmDeleteGroup.value = true
+	valueIdDeleteGroup.value = id
+}
+function cancelDeleteGroup() {
+	isOpenDialogConfirmDeleteGroup.value = false
+}
+function handleConfirmDeleteGroup() {
+	try {
+		props.deleteGroup(valueIdDeleteGroup.value);
+		notify({
+            title: `${valueIdDeleteGroup.value} has been deleted`
+        });
+	}catch(error) {
+		notify({
+            title: error
+        });
 	}
-	else {
+	props.deleteGroup(valueIdDeleteGroup.value);
+	isOpenDialogConfirmDeleteGroup.value = false
+	
+}
+
+function saveChanges() {
+	console.log('editDialogOpen',editDialogOpen);
+	if (editDialogOpen.value === '+') {
 		props.addGroup(editTitle.value);
+	} else if (editDialogOpen.value) {
+		props.editGroup(editDialogOpen.value, editTitle.value);
 	}
 	editDialogOpen.value = null;
 	editTitle.value = '';
 }
-function handleEditGroup(id, title) {
-	props.editGroup(id,title)
-}
-// function changeSort(event:any) {
-// 	console.log('sort', event)
-// }
 const openDrawerCreateItem = ref(false)
 const openDrawerItemEdit = ref(false)
 const reloadGroup = ref(false)
@@ -286,7 +318,7 @@ async function handleOpenDrawerChangeLog (item: Item) {
                     _eq: collectionKey.value,
                 },
                 item: {
-                    _eq: item?.[props.primaryKeyField.value?.field],
+                    _eq: item?.[props.primaryKeyField?.field],
                 },
                 // version: {
                 //     _null: true,
@@ -407,7 +439,7 @@ const choices = computed<{ text: string }[]>(
 .disable-button-next-pre {
 	pointer-events: none;
 	cursor: not-allowed !important;
-	background: #e5e7eb;
+	background: var(--blue-10);
 	opacity: 0.5;
 }
 .item-change-log:first-child {
@@ -420,7 +452,7 @@ const choices = computed<{ text: string }[]>(
 	padding: 0 40px;
 }
 .item-change-log:hover {
-	background-color: #f0f9ff;
+	background-color: var(--blue-10);
 }
 .render-thumbnail {
     aspect-ratio: 16/9;
@@ -441,10 +473,25 @@ const choices = computed<{ text: string }[]>(
 	height: 44px;
 	display: flex;
 	align-items: center;
-	background-color: #E5E7EB;
+	background-color: var(--background-normal-alt);
 	padding: 14px 0;
 	padding-left: 12px;
 	border-radius: 4px;
 	cursor: pointer;
+}
+.confirm-delete .v-card-title, .confirm-delete .v-card-text  {
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 600;
+}
+.confirm-delete .v-card-text  {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 400;
+}
+.button-confirm-delete {
+	--v-button-background-color: var(--theme--danger);
+    --v-button-background-color-hover: var(--danger-125);
+    --v-button-background-color-active: var(--theme--danger);
 }
 </style>

@@ -1,44 +1,86 @@
 <template>
     <section class="card drag-handle">
         <header>
-            <v-image v-if="item?.[layoutOptions?.imageSource]" class="render-thumbnail" :src="partImage(item?.[layoutOptions?.imageSource])" />
+            <v-image 
+                v-if="item?.[layoutOptions?.imageSource]" 
+                class="render-thumbnail" 
+                :class="{'card-image-fill': layoutOptions?.crop}"
+                :src="partImage(item?.[layoutOptions?.imageSource])" 
+            />
             <display-formatted-value
                 type="text"
                 :value="item?.[layoutOptions?.titleField]"
                 format
                 class="card-title"
             ></display-formatted-value>
-            <div class="button-edit" @click="handleShowMenuEdit(item)">
-                <v-icon name="edit" />
-            </div>
-            <ul class="menu-edit" :class="{'show-menu-edit': isShowMenuEdit === item?.[props.primaryKeyField.field]}">
-                <li @click="handleEditItem">Edit Item</li>
-                <li @click="$emit('openChangeLog')">Change log</li>
-                <li @click="handleDeleteItem(item)">Delete</li>
-            </ul>
+            <v-menu show-arrow v-if="isShowMenuCard">
+                    <template #activator="{ toggle, active }">
+                        <v-button 
+                            class="button-edit-item"
+                            :class="{ active }"
+                            @click.stop="toggle" 
+                            icon
+                        >
+                        <v-icon name="edit" />
+                        </v-button>
+                    </template>
+                    <v-list @click.stop="handleEditItem" class="list-menu-item">
+                        <span class="text-14px">Edit Item</span>
+                    </v-list>
+                    <v-list @click.stop="handleChangLogItem" class="list-menu-item">
+                        <span class="text-14px">Change Group</span>
+                    </v-list>
+                    <v-list @click.stop="handleDeleteItem" class="list-menu-item">
+                        <span class="text-14px">Delete Item</span>
+                    </v-list>
+                </v-menu>
         </header>
         <main v-if="layoutOptions?.cardContentTemplate">
-            <display-formatted-value
-                type="text"
-                :value="item?.[layoutOptions?.textField]"
-                format
-            ></display-formatted-value>
+            <div class="main-content">
+                <display-formatted-value
+
+                    type="text"
+                    :value="item?.[layoutOptions?.textField]"
+                    format
+                ></display-formatted-value>
+            </div>
+            <div class="w-24px h24px">
+                <v-image v-if="avatarUserCreate" class="render-avatar-user-created" :src="partImage(avatarUserCreate)" />
+                <v-icon v-else name="person" />
+            </div>
         </main>
+        <!-- confirm delete -->
+        <v-dialog :model-value="isOpenConfirmDialog" @esc="cancelChanges()">
+            <div class="confirm-delete">
+                <v-card>
+                    <v-card-title>Are you sure</v-card-title>
+                    <v-card-text>
+                        Are you sure you want to Delete this card?. You can’t undo this action
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-button secondary @click="cancelChanges()">Cancel</v-button>
+                        <v-button class="button-confirm-delete" @click="handleConfirmDelete(item)">Delete</v-button>
+                    </v-card-actions>
+                </v-card>
+            </div>
+        </v-dialog>
     </section>
 </template>
 
 <script setup lang="ts">
+import { watch } from "vue";
 import { Filter } from "@directus/types";
 import { LayoutOptions } from '../types';
 import { ref } from "vue";
 import { useApi } from '@directus/extensions-sdk';
 import { partImage } from '../../share/utils/part-image'
 import { notify } from '../../share/utils/notify';
-import { useRevisions } from '@/composables/use-revisions';
 interface Props {
 	layoutOptions?: LayoutOptions;
     primaryKeyField?: Record<string, any> | null;
 	collection?: string;
+    openChangeLog?: boolean;
+    openDrawerItemEdit?: boolean;
     collectionKey?: string;
 	filter?: Filter | null;
 	search?: string | null;
@@ -56,20 +98,50 @@ const emit = defineEmits([
     'openChangeLog'
 ])
 
-const isShowMenuEdit = ref(null) 
-function handleShowMenuEdit(item: Object) {
-    if(isShowMenuEdit.value !== null) {
-        isShowMenuEdit.value = null
-    }
-    else {
-        isShowMenuEdit.value = item?.[props.primaryKeyField.field]
-    }
-    
+const avatarUserCreate = ref(null)
+async function getDataUser() {
+    const res = await api.get('/users/' + props.item.user_created, {
+        params: {
+            fields: ['avatar']
+        },
+    });
+    avatarUserCreate.value = res?.data?.data?.avatar
 }
-async function handleDeleteItem(item: Object) {
-    try {
+getDataUser()
+
+const isOpenConfirmDialog = ref(false)
+const isShowMenuCard = ref(true)
+function handleEditItem() {
+    emit('editItem')
+    isShowMenuCard.value = false
+}
+watch(()=> props.openDrawerItemEdit, (newValue) => {
+    if(newValue === false) {
+        isShowMenuCard.value = true
+    }
+})
+function handleChangLogItem() {
+    emit('openChangeLog')
+    isShowMenuCard.value = false
+}
+
+watch(()=> props.openChangeLog, (newValue) => {
+    if(newValue === false) {
+        isShowMenuCard.value = true
+    }
+})
+function handleDeleteItem() {
+    isOpenConfirmDialog.value = true;
+    isShowMenuCard.value = false
+}
+function cancelChanges() {
+	isOpenConfirmDialog.value = false;
+    isShowMenuCard.value = true
+}
+async function handleConfirmDelete(item: Object) {
+ try {
         await api.delete(`/items/${props.collectionKey}/${item?.[props.primaryKeyField.field]}`);
-        isShowMenuEdit.value = null;
+        isShowMenuCard.value = true
         emit('deleteItem')
         notify({
             title: `Item ${item.title} has been deleted successfully`
@@ -80,29 +152,22 @@ async function handleDeleteItem(item: Object) {
         });
     }
 }
-function handleEditItem() {
-    emit('editItem')
-    isShowMenuEdit.value = null
-}
 </script>
 
 <style scoped>
 .card {
     display: flex;
     flex-flow: column nowrap;
+    gap: 8px;
     flex-grow: 1;
-    gap: 8px;
-    align-items: stretch;
-    cursor: pointer;
-}
-
-.card {
-    display: flex;
-    flex-flow: column nowrap;
-    gap: 8px;
     border-radius: 4px;
     box-shadow: 0px 1px 4px 0px rgba(var(--card-shadow-color), 0.05);
     background-color: var(--theme--background);
+    align-items: stretch;
+    cursor: pointer;
+}
+.card:hover {
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
 }
 
 .card>* {
@@ -154,76 +219,98 @@ header>.card-title.muted {
     justify-content: stretch;
     align-items: stretch;
 }
-
+main {
+    padding-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+}
+.main-content {
+    width: 75%;
+    display: -webkit-box;
+    max-height: 50px;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    -webkit-line-clamp: 2;
+    line-height: 25px;
+}
 .card-icon>.card-icon-inner {
     padding: 0;
     flex-grow: 1;
     text-align: center;
 }
-.render-thumbnail {
-    aspect-ratio: 16/9;
-    height: 150px;
-    max-width: 100%;
+.render-avatar-user-created {
+    aspect-ratio: 1/1;
+    height: 100%;
+	width: 100%;
     object-fit: cover;
-    border-radius: 4px;
+    border-radius: 50%;
 }
-
-.button-edit {
-    cursor: pointer;
+.render-thumbnail {
+    max-width: 100%;
+    object-fit: contain;
+    border-radius: 6px;
+}
+.card-image-fill {
+    width:250px;
+    height:150px;
+    object-fit: cover;
+}
+.button-edit-item {
     position: absolute;
-    right: 16px;
-    top: 16px;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #fff;
+    right: 25px;
+    top: 20px;
+    --v-button-min-width:32px;
+    --v-button-width: 32px;
+    --v-button-height: 32px;
+    color: var(--foreground-inverted);
     font-size: 16px;
     border-radius: 4px;
-}
-.button-edit > .v-icon {
-    width: 16px;
-    min-width: 16px;
-    height: 16px;
+    --v-button-background-color: none;
     --v-icon-size: 16px;
+    opacity: 0;
+    --v-button-background-color-hover: none !important;
 }
-.button-edit::before {
+.card:hover .button-edit-item {
+    opacity: 1;
+}
+.button-edit-item::before {
     content: '';
     width: 100%;
     height: 100%;
     opacity: 0.4;
-    background-color: #111827;
+    background-color: var(--overlay-color);
     right: 0;
     position: absolute;
     border-radius: 4px;
+
 }
-.menu-edit {
-    position: absolute;
-    top: 55px;
-    right: 17px;
-    background-color: #fff;
-    list-style-type: none;
-    z-index: 10;
-    padding-left: 0;
-    min-width: 130px;
-    border-radius: 4px;
-    display: none;
-} 
-.show-menu-edit {
-    display: block;
+.active {
+    opacity: 1;
+    --v-button-background-color-active: none !important;
 }
-.menu-edit > li {
-    padding: 8px 0;
-    padding-left: 16px;
-    border-bottom: 1px solid #E2E8F0;
+.list-menu-item {
+    cursor: pointer;
+    margin: 8px;
+}
+.list-menu-item:hover {
+    color: var(--project-color)
+}
+.confirm-delete .v-card-title, .confirm-delete .v-card-text  {
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 600;
+}
+.confirm-delete .v-card-text  {
+    text-align: center;
+    font-size: 12px;
     font-weight: 400;
-    font-size: 14px;
 }
-.menu-edit > li:hover {
-    color: #4F46E5;
-}
-.menu-edit > li:last-child {
-    border-bottom: unset;
+.button-confirm-delete {
+    --v-button-background-color: var(--theme--danger);
+    --v-button-background-color-hover: var(--danger-125);
+    --v-button-background-color-active: var(--theme--danger);
 }
 </style>
