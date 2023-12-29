@@ -497,15 +497,15 @@ const choices = computed<{ text: string }[]>(
 	border-radius: 4px;
 	cursor: pointer;
 }
-.confirm-delete .v-card-title, .confirm-delete .v-card-text  {
+.confirm-delete .v-card-title {
     justify-content: center;
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 18px;
+    font-weight: 700;
 }
 .confirm-delete .v-card-text  {
     text-align: center;
-    font-size: 12px;
-    font-weight: 400;
+    font-size: 15px;
+    font-weight: 500;
 }
 .button-confirm-delete {
 	--v-button-background-color: var(--theme--danger);
