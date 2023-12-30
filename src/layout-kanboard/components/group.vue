@@ -304,9 +304,12 @@ main {
     --v-button-width: 32px;
     --v-button-height: 32px;
     --v-button-background-color: none;
-    --v-icon-color: var(--background-inverted);
+    --v-icon-color: var(--fc-neutral-text-color);
     --v-button-background-color-hover: none;
     --v-button-background-color-active: none;
+}
+.button-header:hover{
+    --v-icon-color: var(--black);
 }
 .list-menu-item {
     cursor: pointer;
