@@ -10,6 +10,7 @@
                 <v-button 
                     class="button-header" 
                     @click="$emit('createItem', fieldValue)"
+                    v-tooltip.bottom="'Create Item'"
                     icon
                 >
                     <v-icon name="add" />
@@ -19,7 +20,8 @@
                         <v-button 
                             class="button-header"
                             :class="{ active }"
-                            @click="toggle" 
+                            @click="toggle"
+                            v-tooltip.bottom="'Edit Group'" 
                             icon
                         >
                             <v-icon name="more_vert" />

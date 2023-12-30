@@ -73,15 +73,17 @@
 			<template #actions>
 				<div 
 					@click="handleNextItem"
+					v-tooltip.bottom="'Next Item'"
 					:class="{'disable-button-next-pre' : disableNextItem}"
-					class="bg-[var(--blue-25)] w-44px h-44px flex flex-col items-center justify-center text-[var(--project-color)] rounded-50% hover:bg-[var(--blue-50)] cursor-pointer"
+					class="bg-[var(--purple-25)] w-44px h-44px flex flex-col items-center justify-center text-[var(--purple-75)] rounded-50% hover:bg-[var(--purple-50)] cursor-pointer"
 				>
 					<v-icon name="keyboard_arrow_down"/>
 				</div>
 				<div 
 					@click="handlePreItem"
+					v-tooltip.bottom="'Previous Item'"
 					:class="{ 'disable-button-next-pre' : disablePrevItem}"
-					class="bg-[var(--blue-25)] w-44px h-44px flex flex-col items-center justify-center text-[var(--project-color)] rounded-50% hover:bg-[var(--blue-50)] cursor-pointer"
+					class="bg-[var(--purple-25)] w-44px h-44px flex flex-col items-center justify-center text-[var(--purple-75)] rounded-50% hover:bg-[var(--purple-50)] cursor-pointer"
 				>
 					<v-icon name="keyboard_arrow_up"/>
 				</div>
@@ -457,7 +459,7 @@ const choices = computed<{ text: string }[]>(
 .disable-button-next-pre {
 	pointer-events: none;
 	cursor: not-allowed !important;
-	background: var(--blue-10);
+	background: var(--purple-10);
 	opacity: 0.5;
 }
 .item-change-log:first-child {

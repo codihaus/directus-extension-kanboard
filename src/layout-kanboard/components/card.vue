@@ -17,6 +17,7 @@
                     <template #activator="{ toggle, active }">
                         <v-button 
                             class="button-edit-item"
+                            v-tooltip.bottom="'Edit Item'"
                             :class="{ active }"
                             @click.stop="toggle" 
                             icon
