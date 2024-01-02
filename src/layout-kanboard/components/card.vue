@@ -292,6 +292,9 @@ main {
     border-radius: 4px;
 
 }
+.button-edit-item:hover::before {
+    opacity: 1;
+}
 .active {
     opacity: 1;
     --v-button-background-color-active: none !important;
