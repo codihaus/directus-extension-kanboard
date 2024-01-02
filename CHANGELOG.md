@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v0.0.12
+
+[compare changes](https://github.com/codihaus/directus-extension-kanboard/compare/v0.0.11...v0.0.12)
+
+### 🏡 Chore
+
+- Build ([df038d9](https://github.com/codihaus/directus-extension-kanboard/commit/df038d9))
+
+### 🎨 Styles
+
+- **card:** 🔥  styling popup ([33c7d25](https://github.com/codihaus/directus-extension-kanboard/commit/33c7d25))
+
+### ❤️ Contributors
+
+- CodiHaus <contact@codihaus.com>
+- Hoang-Cdh
+
 ## v0.0.11
 
 [compare changes](https://github.com/codihaus/directus-extension-kanboard/compare/v0.0.10...v0.0.11)

@@ -1,6 +1,6 @@
 {
   "name": "directus-extension-kanboard",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "type": "module",
   "directus:extension": {
     "host": "^10.1.9",
