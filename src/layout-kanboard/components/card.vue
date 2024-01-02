@@ -142,7 +142,8 @@ async function handleConfirmDelete(item: Object) {
  try {
         await api.delete(`/items/${props.collectionKey}/${item?.[props.primaryKeyField.field]}`);
         isShowMenuCard.value = true
-        emit('deleteItem')
+        emit('deleteItem', item)
+        isOpenConfirmDialog.value = false
         notify({
             title: `Item ${item.title} has been deleted successfully`
         });
