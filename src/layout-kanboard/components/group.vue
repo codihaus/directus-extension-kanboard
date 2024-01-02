@@ -202,6 +202,7 @@ interface EndEvent extends CustomEvent {
 }
 
 async function change(event, group) {
+
     const pkField = primaryKeyField.value?.field;
 
     let item: string | number | undefined = undefined
@@ -241,7 +242,7 @@ async function change(event, group) {
 
         sort.value = sort.value
     }
-
+    getItems()
 }
 
 watch(()=> props.newItemData, () => {
