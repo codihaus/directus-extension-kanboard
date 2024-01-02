@@ -184,7 +184,7 @@ const limit = ref(5);
 
 
 
-const { items, totalPages, changeManualSort, getItems  } = useItems(collectionKey, {
+const { items, totalPages, changeManualSort, getItems, getItemCount  } = useItems(collectionKey, {
     limit,
     sort,
     search,
@@ -246,10 +246,16 @@ async function change(event, group) {
 watch(()=> props.reloadGroup, (newValue) => {
     if(newValue === true) {
         getItems();   
+        getItemCount();
+        console.log('totalPages',totalPages.value);
+        
     }
 })
 function handleDeleteItem () {
     getItems()
+    getItemCount()
+    console.log('totalPages',totalPages.value);
+    
 }
 function handleEditItem (item: Item, index: number) {
     emit('editItem',items.value, item, index)
