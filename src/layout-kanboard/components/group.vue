@@ -287,7 +287,6 @@ main {
 }
 .cards {
     padding: 16px;
-    padding-top: 0;
     gap: 10px;
     display: flex;
     flex-flow: column nowrap;
