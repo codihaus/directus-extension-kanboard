@@ -247,14 +247,11 @@ watch(()=> props.reloadGroup, (newValue) => {
     if(newValue === true) {
         getItems();   
         getItemCount();
-        console.log('totalPages',totalPages.value);
-        
     }
 })
 function handleDeleteItem () {
     getItems()
     getItemCount()
-    console.log('totalPages',totalPages.value);
     
 }
 function handleEditItem (item: Item, index: number) {
