@@ -1,6 +1,41 @@
 # Changelog
 
 
+## v0.0.8
+
+[compare changes](https://github.com/codihaus/directus-extension-kanboard/compare/v0.0.7...v0.0.8)
+
+### 🚀 Enhancements
+
+- 🔥  add tootip for button ([fba6f44](https://github.com/codihaus/directus-extension-kanboard/commit/fba6f44))
+
+### 🩹 Fixes
+
+- **card:** 🐛  The user card is not visible ([057bfc7](https://github.com/codihaus/directus-extension-kanboard/commit/057bfc7))
+- **card:** 🐛  The user card is not visible" ([583d394](https://github.com/codihaus/directus-extension-kanboard/commit/583d394))
+
+### 💅 Refactors
+
+- 🔥  Requied Field Add Group ([0c7d184](https://github.com/codihaus/directus-extension-kanboard/commit/0c7d184))
+- **card:** 🔥  ([a7f11ac](https://github.com/codihaus/directus-extension-kanboard/commit/a7f11ac))
+
+### 🏡 Chore
+
+- Build new version ([b47a747](https://github.com/codihaus/directus-extension-kanboard/commit/b47a747))
+- **release:** V0.0.7 ([18afc98](https://github.com/codihaus/directus-extension-kanboard/commit/18afc98))
+
+### 🎨 Styles
+
+- **card:** 🔥  styilng button when content/image is not displayed (Photo) ([07b05fa](https://github.com/codihaus/directus-extension-kanboard/commit/07b05fa))
+- 🔥  styling group ([7d44cc6](https://github.com/codihaus/directus-extension-kanboard/commit/7d44cc6))
+- **card:** 🔥  styling popup ([a7ee367](https://github.com/codihaus/directus-extension-kanboard/commit/a7ee367))
+- **card:** 🎨  styling popup ([aa650dc](https://github.com/codihaus/directus-extension-kanboard/commit/aa650dc))
+
+### ❤️ Contributors
+
+- Hoang-Cdh 
+- CodiHaus <contact@codihaus.com>
+
 ## v0.0.7
 
 [compare changes](https://github.com/codihaus/directus-extension-kanboard/compare/v0.0.6...v0.0.7)
