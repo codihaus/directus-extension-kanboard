@@ -7,7 +7,6 @@ import { getRootPath } from '../shared/utils/get-root-path';
 import { addTokenToURL } from '../shared/utils/add-token-to-url';
 import LayoutComponent from './layout.vue';
 import Options from "./options.vue";
-import Actions from "./actions.vue";
 
 
 export default defineLayout({
@@ -18,7 +17,7 @@ export default defineLayout({
 	slots: {
 		options: Options,
 		sidebar: () => null,
-		actions: Actions,
+		actions: null,
 	},
 	setup(props, { emit }) {
 		const { t } = useI18n()

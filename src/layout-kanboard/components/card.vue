@@ -29,7 +29,7 @@
                         <span class="text-14px">Edit Item</span>
                     </v-list>
                     <v-list @click.stop="handleChangLogItem" class="list-menu-item">
-                        <span class="text-14px">Change Group</span>
+                        <span class="text-14px">Changelog</span>
                     </v-list>
                     <v-list @click.stop="handleDeleteItem" class="list-menu-item">
                         <span class="text-14px">Delete Item</span>
@@ -142,7 +142,8 @@ async function handleConfirmDelete(item: Object) {
  try {
         await api.delete(`/items/${props.collectionKey}/${item?.[props.primaryKeyField.field]}`);
         isShowMenuCard.value = true
-        emit('deleteItem')
+        emit('deleteItem', item)
+        isOpenConfirmDialog.value = false
         notify({
             title: `Item ${item.title} has been deleted successfully`
         });
@@ -291,6 +292,9 @@ main {
     position: absolute;
     border-radius: 4px;
 
+}
+.button-edit-item:hover::before {
+    opacity: 1;
 }
 .active {
     opacity: 1;

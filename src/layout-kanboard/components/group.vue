@@ -9,7 +9,7 @@
             <div class="flex relative">
                 <v-button 
                     class="button-header" 
-                    @click="$emit('createItem', fieldValue)"
+                    @click="handleCreateItem"
                     v-tooltip.bottom="'Create Item'"
                     icon
                 >
@@ -58,7 +58,7 @@
                         :open-change-log="openChangeLog"
                         :open-drawer-item-edit="openDrawerItemEdit"
                         @click="handleEditItem(element ,index)"
-                        @delete-item="handleDeleteItem"
+                        @delete-item="handleDeleteItem(index)"
                         @edit-item="handleEditItem(element ,index)"
                         @open-change-log="$emit('openChangeLog', element)"
                     />
@@ -80,7 +80,7 @@
     </section>
 </template>
 <script setup lang="ts">
-import { computed, defineComponent, PropType, ref, toRefs, watch } from "vue";
+import { computed, defineComponent, onMounted, PropType, ref, toRefs, watch } from "vue";
 import { useApi, useCollection, useItems, useSync } from "@directus/extensions-sdk";
 import { Field, Filter, LogicalFilterAND } from "@directus/types";
 import { LayoutOptions } from "../types";
@@ -101,7 +101,7 @@ interface Props {
 	isRefresh?: boolean;
     openChangeLog?: boolean;
     openDrawerItemEdit?: boolean;
-    
+    newItemData?: object
 	groupCollection?: string | null;
 	groupedItems?: Group[];
 	groupTitle?: string | null;
@@ -243,19 +243,31 @@ async function change(event, group) {
     }
 
 }
-watch(()=> props.reloadGroup, (newValue) => {
-    if(newValue === true) {
-        getItems();   
-        getItemCount();
-        console.log('totalPages',totalPages.value);
-        
+
+watch(()=> props.newItemData, () => {
+    let data = items.value
+    let editItem = false
+    data.forEach((item,index) => {
+        if(props.newItemData.id === item.id){
+            data[index] = props.newItemData
+            editItem = true
+        }
+    })
+    if( !editItem && props.newItemData?.[field.value.field] === fieldValue.value) {
+        data=[...data, props.newItemData]
     }
+    items.value = data
+    getItemCount();
 })
-function handleDeleteItem () {
-    getItems()
-    getItemCount()
-    console.log('totalPages',totalPages.value);
+function handleCreateItem() {
+    emit('createItem', fieldValue)
+}
+function handleDeleteItem (index: number) {
+    let data = items.value
+    data.splice(index,1);
     
+    items.value = data
+    getItemCount();
 }
 function handleEditItem (item: Item, index: number) {
     emit('editItem',items.value, item, index)
@@ -290,20 +302,16 @@ main {
 }
 .cards {
     padding: 16px;
-    padding-top: 0;
     gap: 10px;
     display: flex;
     flex-flow: column nowrap;
     flex-grow: 1;
+    min-height: 100%;
 }
 
 .cards>* {
     display: flex;
     flex: 0 0 auto;
-}
-
-.cards>*:last-child {
-    flex-grow: 1;
 }
 .button-header {
     --v-button-min-width:32px;
@@ -325,6 +333,7 @@ main {
     --v-icon-size: 16px;
 }
 .v-pagination {
+    padding-top: 10px;
     justify-content: center;
 }
 </style>

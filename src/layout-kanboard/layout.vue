@@ -27,6 +27,7 @@
 					:reloadGroup="reloadGroup"
 					:open-change-log="openChangeLog"
 					:open-drawer-item-edit="openDrawerItemEdit"
+					:new-item-data="dataItemCreated"
 					@create-item="handleOpenDrawerCreateItem"
 					@edit-item="handleOpenDrawerEditItem"
 					@open-change-log="handleOpenDrawerChangeLog"
@@ -282,16 +283,19 @@ function handleOpenDrawerCreateItem (fieldValue: string) {
 	
 	openDrawerCreateItem.value = true
 }
+const dataItemCreated = ref({})
 async function handleCreateItem(data: any) {
 	
 	if (!data) return;
 	try {
 		reloadGroup.value = false;
-		await api.post(`/items/${collectionKey.value}`, data);
+		const res = await api.post(`/items/${collectionKey.value}`, data);
+		dataItemCreated.value = res.data.data
 		reloadGroup.value = true;
 		notify({
             title: `Successfully created ${data.title} item`
         });
+		
 	} catch (error) {
 		notify({
             title: error
@@ -395,7 +399,8 @@ async function handleEditItem(data: any) {
     if (!data) return;
 	try {
 		reloadGroup.value = false;
-		await api.patch(`/items/${collectionKey.value}/${data.id}`, data);
+		const res = await api.patch(`/items/${collectionKey.value}/${data.id}`, data);
+		dataItemCreated.value = res.data.data
 		reloadGroup.value = true;
 		openDrawerItemEdit.value = false;
 		notify({
