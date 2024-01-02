@@ -314,8 +314,8 @@ main {
 }
 .confirm-delete .v-card-text  {
     text-align: center;
-    font-size: 15px;
-    font-weight: 500;
+    font-size: 16px;
+    font-weight: 600;
 }
 .button-confirm-delete {
     --v-button-background-color: var(--theme--danger);
