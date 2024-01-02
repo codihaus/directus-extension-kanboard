@@ -291,15 +291,12 @@ main {
     display: flex;
     flex-flow: column nowrap;
     flex-grow: 1;
+    min-height: 100%;
 }
 
 .cards>* {
     display: flex;
     flex: 0 0 auto;
-}
-
-.cards>*:last-child {
-    flex-grow: 1;
 }
 .button-header {
     --v-button-min-width:32px;
