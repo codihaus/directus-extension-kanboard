@@ -252,7 +252,6 @@ watch(()=> props.reloadGroup, (newValue) => {
 function handleDeleteItem () {
     getItems()
     getItemCount()
-    
 }
 function handleEditItem (item: Item, index: number) {
     emit('editItem',items.value, item, index)
