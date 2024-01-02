@@ -18,3 +18,5 @@ Run the command at your Directus root project level
 # How to use
 On your right sidebar, you would be able to select the Layout to display, select `Kanboard`
 By selecting `Kanboard`, it will show you the additional configurations to customize kanban.
+
+Layout Option ![Layout Option Kanbroad](https://github.com/codihaus/directus-extension-kanboard/assets/148735960/868a411f-0ab0-4016-8b11-ae0c5f030fa0)
