@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v0.0.10
+
+[compare changes](https://github.com/codihaus/directus-extension-kanboard/compare/v0.0.9...v0.0.10)
+
+### 💅 Refactors
+
+- 🔥  get total pages when create item ([c4c234d](https://github.com/codihaus/directus-extension-kanboard/commit/c4c234d))
+
+### 🏡 Chore
+
+- Build ([bc5a8bd](https://github.com/codihaus/directus-extension-kanboard/commit/bc5a8bd))
+
+### ❤️ Contributors
+
+- CodiHaus <contact@codihaus.com>
+- Hoang-Cdh
+
 ## v0.0.9
 
 [compare changes](https://github.com/codihaus/directus-extension-kanboard/compare/v0.0.8...v0.0.9)
