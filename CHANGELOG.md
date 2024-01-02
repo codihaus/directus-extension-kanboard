@@ -1,6 +1,31 @@
 # Changelog
 
 
+## v0.0.11
+
+[compare changes](https://github.com/codihaus/directus-extension-kanboard/compare/v0.0.10...v0.0.11)
+
+### 🩹 Fixes
+
+- **card:** 🐛  edit title changefroup ([be63eb7](https://github.com/codihaus/directus-extension-kanboard/commit/be63eb7))
+
+### 💅 Refactors
+
+- 🔥  delete getitem when create, edit, delete card ([b8e9f90](https://github.com/codihaus/directus-extension-kanboard/commit/b8e9f90))
+
+### 🏡 Chore
+
+- Build ([cb5a296](https://github.com/codihaus/directus-extension-kanboard/commit/cb5a296))
+
+### 🎨 Styles
+
+- **card:** 🔥  styling card ([075882f](https://github.com/codihaus/directus-extension-kanboard/commit/075882f))
+
+### ❤️ Contributors
+
+- CodiHaus <contact@codihaus.com>
+- Hoang-Cdh
+
 ## v0.0.10
 
 [compare changes](https://github.com/codihaus/directus-extension-kanboard/compare/v0.0.9...v0.0.10)
