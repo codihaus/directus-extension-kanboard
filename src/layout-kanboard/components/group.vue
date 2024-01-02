@@ -209,18 +209,27 @@ async function change(event, group) {
     let to: string | number | undefined = undefined
 
     if( event.added ) {
-        
+
         const id = event.added.element[pkField]
         
         const diff = {
             [pkField]: id,
             [field.value.field]: fieldValue.value,
         };
-        await api.patch(`items/${collectionKey.value}`, [diff]);
+        const res = await api.patch(`items/${collectionKey.value}`, [diff]);
         item = id
         to = items.value[event.added.newIndex-1]?.[pkField];
+        console.log('items.value',items.value);
+        
+        const index = items.value.findIndex(obj => {
+            return res.data.data.some(item => item.id === obj.id);
+        });
+        console.log('index', index);
+        
+        if (index !== -1) {
+            items.value.splice(index, 1, { ...res.data.data[0] });
+        }
     }
-
     if( event.moved ) {
         const group = Object.assign({}, items.value)
         item = event.moved.element?.[pkField];
@@ -242,7 +251,6 @@ async function change(event, group) {
 
         sort.value = sort.value
     }
-    getItems()
 }
 
 watch(()=> props.newItemData, () => {
