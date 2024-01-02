@@ -29,7 +29,7 @@
                         <span class="text-14px">Edit Item</span>
                     </v-list>
                     <v-list @click.stop="handleChangLogItem" class="list-menu-item">
-                        <span class="text-14px">Change Group</span>
+                        <span class="text-14px">Change Item</span>
                     </v-list>
                     <v-list @click.stop="handleDeleteItem" class="list-menu-item">
                         <span class="text-14px">Delete Item</span>
