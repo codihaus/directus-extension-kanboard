@@ -361,18 +361,31 @@ const detailRevisionDataChange = ref({})
 
 function handleOpenChangeLogDetail(item, index) {
 	detailRevisionSubtitle.value = `${formatDateTime(item?.activity?.timestamp)} by ${item?.activity?.user?.email}`
-
+	
 	const differences = [];
 
 	for (let key in item?.data) {
-		if (item?.data[key] !== listRevisions.value[index + 1]?.data[key]) {
-			differences.push({ key, oldValue: item?.data[key], newValue: listRevisions.value[index + 1]?.data[key] });
+		if (key !== 'id') {
+			const oldValue = item?.data[key];
+			const newValue = listRevisions.value[index + 1]?.data[key];
+
+			if ((oldValue !== newValue) && 
+				((oldValue !== null && oldValue !== undefined) || 
+				(newValue !== null && newValue !== undefined))) {
+			differences.push({ key, oldValue, newValue });
+			}
 		}
 	}
 
 	for (let key in listRevisions.value[index + 1]?.data) {
-		if (!item?.data.hasOwnProperty(key)) {
-			differences.push({ key, oldValue: null, newValue: listRevisions.value[index + 1]?.data[key] });
+		if (key !== 'id') {
+			const oldValue = null;
+			const newValue = listRevisions.value[index + 1]?.data[key];
+
+			if (!item?.data.hasOwnProperty(key) && 
+				((newValue !== null && newValue !== undefined))) {
+			differences.push({ key, oldValue, newValue });
+			}
 		}
 	}
 

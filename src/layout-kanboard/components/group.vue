@@ -219,12 +219,10 @@ async function change(event, group) {
         const res = await api.patch(`items/${collectionKey.value}`, [diff]);
         item = id
         to = items.value[event.added.newIndex-1]?.[pkField];
-        console.log('items.value',items.value);
         
         const index = items.value.findIndex(obj => {
             return res.data.data.some(item => item.id === obj.id);
         });
-        console.log('index', index);
         
         if (index !== -1) {
             items.value.splice(index, 1, { ...res.data.data[0] });
