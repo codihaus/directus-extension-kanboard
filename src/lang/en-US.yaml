@@ -1,0 +1,3 @@
+kanboard:
+  layout:
+    add_value_group_placeholder: Enter a new group id...

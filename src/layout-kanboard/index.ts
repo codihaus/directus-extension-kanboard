@@ -1,5 +1,5 @@
-import { computed, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { computed, ref, toRefs, watch, provide } from 'vue';
+import { useI18n, createI18n } from 'vue-i18n';
 import { defineLayout, useCollection, useFilterFields, useItems, useSync, useStores, useApi } from '@directus/extensions-sdk';
 import { getEndpoint, getRelationType, moveInArray } from '@directus/utils';
 import { translate } from '../shared/utils/translate-literal';
@@ -7,6 +7,7 @@ import { getRootPath } from '../shared/utils/get-root-path';
 import { addTokenToURL } from '../shared/utils/add-token-to-url';
 import LayoutComponent from './layout.vue';
 import Options from "./options.vue";
+import enUS from "../lang/en-US.yaml"
 
 
 export default defineLayout({
@@ -20,7 +21,9 @@ export default defineLayout({
 		actions: null,
 	},
 	setup(props, { emit }) {
-		const { t } = useI18n()
+		const { t, mergeLocaleMessage }= useI18n()
+		
+		mergeLocaleMessage('en-US',enUS)
 		const api = useApi()
 
 		const { useFieldsStore, useRelationsStore, useServerStore } = useStores();
@@ -387,7 +390,7 @@ export default defineLayout({
 				await getGroups();
 			}
 
-			async function addGroup(title: string) {
+			async function addGroup(title: string, value: string) {
 				if(isRelational.value) {
 					if (groupTitle.value === null || !groupsCollection.value) return;
 					await api.post(getEndpoint(groupsCollection.value), {
@@ -399,7 +402,7 @@ export default defineLayout({
 					
 					const updatedChoices = selectedGroup.value?.meta?.options?.choices 
 					
-					updatedChoices.push({text: title, value: title.replace(/\s+/g, '_') })
+					updatedChoices.push({text: title, value: value})
 					await fieldsStore.updateField(selectedGroup.value.collection, selectedGroup.value.field, {
 						meta: { options: { choices: updatedChoices } },
 					});
@@ -408,7 +411,7 @@ export default defineLayout({
 				await getGroups();
 			}
 
-			async function editGroup(id: string | number, title: string) {
+			async function editGroup(id: string | number, title: string, value: string) {
 				if (isRelational.value) {
 					if (groupTitle.value === null || !groupsCollection.value) return;
 
@@ -424,7 +427,7 @@ export default defineLayout({
 								return {
 									...choice,
 									text: title,
-									value: title.replace(/\s+/g, '_')
+									value: value
 								};
 							}
 
