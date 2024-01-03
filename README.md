@@ -69,5 +69,8 @@ Delete group:
 ![delete-group-done](https://github.com/codihaus/directus-extension-kanboard/assets/148735960/6602bfaf-2cf8-497c-b7d2-b1d5aa2d979c)
 
 
+Link Video: https://drive.google.com/file/d/10-BgH2IEbr76sQclR7M0jGCPL17uunJu/view?usp=sharing
+
+
 
 
