@@ -1,6 +1,24 @@
 # Changelog
 
 
+## v0.0.14
+
+[compare changes](https://github.com/codihaus/directus-extension-kanboard/compare/v0.0.13...v0.0.14)
+
+### 💅 Refactors
+
+- **card:** 🔥  fix move card ([6604dbf](https://github.com/codihaus/directus-extension-kanboard/commit/6604dbf))
+- 🔥  change logic change log detail ([c0b8aac](https://github.com/codihaus/directus-extension-kanboard/commit/c0b8aac))
+
+### 🏡 Chore
+
+- Build ([e1c9c8b](https://github.com/codihaus/directus-extension-kanboard/commit/e1c9c8b))
+
+### ❤️ Contributors
+
+- CodiHaus <contact@codihaus.com>
+- Hoang-Cdh
+
 ## v0.0.13
 
 [compare changes](https://github.com/codihaus/directus-extension-kanboard/compare/v0.0.11...v0.0.13)
