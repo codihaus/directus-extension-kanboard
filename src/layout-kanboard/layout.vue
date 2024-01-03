@@ -255,7 +255,7 @@ function handleConfirmDeleteGroup() {
 		isDeletedGroup.value = true
 	}catch(error) {
 		notify({
-			type: 'error'
+			type: 'error',
             title: error
         });
 	}
