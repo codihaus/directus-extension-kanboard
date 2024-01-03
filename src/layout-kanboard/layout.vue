@@ -100,7 +100,10 @@
 		>
 			<div v-for="item, index in listRevisions" :key="index" class="item-change-log" @click="handleOpenChangeLogDetail(item, index)">
 				<div class="w-40px h-40px">
-					<v-image v-if="item?.activity?.user?.avatar" class="render-thumbnail" :src="partImage(item?.activity?.user?.avatar)" />
+					<div v-if="item?.dataUserUpdate?.avatar || item?.activity?.user?.avatar" class="w-100% h-100%">
+						<v-image v-if="item?.activity?.action === 'update'" class="render-thumbnail" :src="partImage(item?.dataUserUpdate?.avatar)" />
+						<v-image v-if="item?.activity?.action === 'create'" class="render-thumbnail" :src="partImage(item?.activity?.user?.avatar)" />
+					</div>
 					<div v-else class="w-100% h-100% rounded-full bg-slate-200"></div>
 				</div>
 				<div class="ml-12px">
@@ -109,7 +112,7 @@
 						<span v-if="item?.activity?.action === 'update'"> Update Item</span>
 						<span v-if="item?.activity?.action === 'create'"> Create Item</span>
 					</div>
-					<div class="flex items-center text-12px font-400 mt-8px leading-18px">
+					<div class="flex items-center text-12px font-400 leading-18px">
 						<v-icon name="nest_clock_farsight_analog" />
 						<span class="ml-4px">{{ formatDateTime(item?.activity?.timestamp) }}</span>
 					</div>
@@ -253,10 +256,6 @@ function checkRequiredCreateGroup() {
 	else {
 		showErrorCreateGroup.value = true
 	}
-	console.log('showErrorCreateGroup.value',showErrorCreateGroup.value);
-	console.log('editTitle',editTitle.value);
-	
-	
 }
 
 function saveChanges() {
@@ -352,6 +351,18 @@ async function handleOpenDrawerChangeLog (item: Item) {
         }
     })
 	listRevisions.value = res.data.data
+	listRevisions.value.map(async (e) => {
+		if(e?.data?.user_updated) {
+			const resUserUpdate = await api.get(`users/${e?.data?.user_updated}`, {
+				params: {
+					fields: ['avatar'],
+				}
+			})
+			e['dataUserUpdate'] = resUserUpdate.data.data
+			
+		}	
+	})
+	console.log('listRevisions.value',listRevisions.value);
 	openChangeLog.value = true
 	
 }
@@ -388,7 +399,6 @@ function handleOpenChangeLogDetail(item, index) {
 			}
 		}
 	}
-
 	detailRevisionDataChange.value = differences
 	openChangeLogDetail.value = true
 }
@@ -481,14 +491,10 @@ const choices = computed<{ text: string }[]>(
 	background: var(--purple-10);
 	opacity: 0.5;
 }
-.item-change-log:first-child {
-	margin-top: 0;
-}
 .item-change-log {
 	--v-icon-size: 15px;
 	display: flex;
-	margin-top: 20px;
-	padding: 0 40px;
+	padding: 10px 40px;
 }
 .item-change-log:hover {
 	background-color: var(--blue-10);
