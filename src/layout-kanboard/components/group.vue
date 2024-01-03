@@ -31,7 +31,7 @@
                         <v-icon name="edit" class="icon-menu"/> 
                         <span class="text-14px ml-5px">Edit Group</span>
                     </v-list>
-                    <v-list @click="$emit('deleteGroup')" class="hover:text-[var(--theme--danger)] list-menu-item">
+                    <v-list @click="handleDeleteGroup" class="hover:text-[var(--theme--danger)] list-menu-item">
                         <v-icon name="delete" class="icon-menu"/> 
                         <span class="text-14px ml-5px">Delete Group</span>
                     </v-list>
@@ -266,6 +266,7 @@ watch(()=> props.newItemData, () => {
     items.value = data
     getItemCount();
 })
+
 function handleCreateItem() {
     emit('createItem', fieldValue)
 }
@@ -279,9 +280,11 @@ function handleDeleteItem (index: number) {
 function handleEditItem (item: Item, index: number) {
     emit('editItem',items.value, item, index)
 }
-const iShowMenuGroup = ref(false)
-function handleShowMenuGroup() {
-    iShowMenuGroup.value = true
+const isArrayCard = ref([])
+const indexGroup = ref(null)
+const data = ref([])
+function handleDeleteGroup() {
+    emit('deleteGroup')
 }
 </script>
 <style scoped>

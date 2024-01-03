@@ -250,19 +250,17 @@ function handleConfirmDeleteGroup() {
 	try {
 		props.deleteGroup(valueIdDeleteGroup.value);
 		notify({
-			// text: t('export_started_copy'),
-			// type: 'success',
-			// icon: 'file_download',
             title: `${valueIdDeleteGroup.value} has been deleted`
         });
+		isDeletedGroup.value = true
 	}catch(error) {
 		notify({
+			type: 'error'
             title: error
         });
 	}
 	props.deleteGroup(valueIdDeleteGroup.value);
 	isOpenDialogConfirmDeleteGroup.value = false
-	
 }
 
 function checkRequiredTitle() {
@@ -347,11 +345,15 @@ const disableNextItem = ref(false);
 function handleOpenDrawerEditItem(items: Array, item: Object, index: Number) {
 	listItems.value = items
 	valueIndex.value = index
-
-	if (index == 0) {
+	
+	if (listItems.value.length === 1) {
+		disablePrevItem.value = true;
+		disableNextItem.value = true;
+	}
+	else if (index === 0) {
 		disablePrevItem.value = true;
 		disableNextItem.value = false;
-	} else if (index == listItems.value.length - 1) {
+	} else if (index === listItems.value.length - 1) {
 		disablePrevItem.value = false;
 		disableNextItem.value = true;
 	} else {
@@ -441,8 +443,6 @@ function handleOpenChangeLogDetail(item, index) {
 
 function handleNextItem() {
 	openDrawerItemEdit.value = false
-
-	// handleOpenDrawerEditItem(listItems.value, listItems.value[valueIndex.value + 1], valueIndex.value + 1)
 	setTimeout(() => {
 		handleOpenDrawerEditItem(listItems.value, listItems.value[valueIndex.value + 1], valueIndex.value + 1)
 	},100)
@@ -456,20 +456,36 @@ function handlePreItem() {
 	},100)
 }
 async function handleEditItem(data: any) {
-    if (!data) return;
-	try {
-		reloadGroup.value = false;
-		const res = await api.patch(`/items/${collectionKey.value}/${data.id}`, data);
-		dataItemCreated.value = res.data.data
-		reloadGroup.value = true;
-		openDrawerItemEdit.value = false;
+	let dataEdit = {};
+	let isEmpty = true
+	Object.keys(data).forEach(key => {
+		if (edits.value[key] !== data[key]) {
+			dataEdit[key] = data[key];
+			isEmpty = false
+		}
+	});
+    if (isEmpty) {
+		openDrawerItemEdit.value = true;
 		notify({
-            title: `Item ${data.title} has been successfully edited`
-        });
-	} catch (error) {
-		notify({
-            title: error
-        });
+				type: 'error',
+				title: `Edit canceled`
+			});
+	}
+	else {
+		try {
+			reloadGroup.value = false;
+			const res = await api.patch(`/items/${collectionKey.value}/${edits.value.id}`, dataEdit);
+			dataItemCreated.value = res.data.data
+			reloadGroup.value = true;
+			openDrawerItemEdit.value = false;
+			notify({
+				title: `${edits.value.title} has been successfully edited`
+			});
+		} catch (error) {
+			notify({
+				title: error
+			});
+		}
 	}
 }
 const { collection: collectionKey, layoutOptions } = toRefs(props);
