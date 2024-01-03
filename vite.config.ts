@@ -5,6 +5,7 @@ import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
 import { replaceCodePlugin } from "vite-plugin-replace";
 import UnoCSS from 'unocss/vite';
 import packageInfo from './package.json'
+import yaml from '@rollup/plugin-yaml';
 
 
 export default defineConfig(({command, mode}) => {
@@ -50,6 +51,11 @@ export default defineConfig(({command, mode}) => {
         },
         plugins: [
             vue(),
+            yaml({
+                transform(data) {
+                    return data === null ? {} : undefined;
+                },
+            }),
             UnoCSS(),
             cssInjectedByJsPlugin(),
             replaceCodePlugin({
