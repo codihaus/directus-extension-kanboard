@@ -1,6 +1,131 @@
 # Changelog
 
 
+## v0.0.13
+
+[compare changes](https://github.com/codihaus/directus-extension-kanboard/compare/v0.0.11...v0.0.13)
+
+### 🏡 Chore
+
+- Build ([df038d9](https://github.com/codihaus/directus-extension-kanboard/commit/df038d9))
+- **release:** V0.0.12 ([16fc8ec](https://github.com/codihaus/directus-extension-kanboard/commit/16fc8ec))
+
+### 🎨 Styles
+
+- **card:** 🔥  styling popup ([33c7d25](https://github.com/codihaus/directus-extension-kanboard/commit/33c7d25))
+
+### ❤️ Contributors
+
+- CodiHaus <contact@codihaus.com>
+- Hoang-Cdh
+
+## v0.0.12
+
+[compare changes](https://github.com/codihaus/directus-extension-kanboard/compare/v0.0.11...v0.0.12)
+
+### 🏡 Chore
+
+- Build ([df038d9](https://github.com/codihaus/directus-extension-kanboard/commit/df038d9))
+
+### 🎨 Styles
+
+- **card:** 🔥  styling popup ([33c7d25](https://github.com/codihaus/directus-extension-kanboard/commit/33c7d25))
+
+### ❤️ Contributors
+
+- CodiHaus <contact@codihaus.com>
+- Hoang-Cdh
+
+## v0.0.11
+
+[compare changes](https://github.com/codihaus/directus-extension-kanboard/compare/v0.0.10...v0.0.11)
+
+### 🩹 Fixes
+
+- **card:** 🐛  edit title changefroup ([be63eb7](https://github.com/codihaus/directus-extension-kanboard/commit/be63eb7))
+
+### 💅 Refactors
+
+- 🔥  delete getitem when create, edit, delete card ([b8e9f90](https://github.com/codihaus/directus-extension-kanboard/commit/b8e9f90))
+
+### 🏡 Chore
+
+- Build ([cb5a296](https://github.com/codihaus/directus-extension-kanboard/commit/cb5a296))
+
+### 🎨 Styles
+
+- **card:** 🔥  styling card ([075882f](https://github.com/codihaus/directus-extension-kanboard/commit/075882f))
+
+### ❤️ Contributors
+
+- CodiHaus <contact@codihaus.com>
+- Hoang-Cdh
+
+## v0.0.10
+
+[compare changes](https://github.com/codihaus/directus-extension-kanboard/compare/v0.0.9...v0.0.10)
+
+### 💅 Refactors
+
+- 🔥  get total pages when create item ([c4c234d](https://github.com/codihaus/directus-extension-kanboard/commit/c4c234d))
+
+### 🏡 Chore
+
+- Build ([bc5a8bd](https://github.com/codihaus/directus-extension-kanboard/commit/bc5a8bd))
+
+### ❤️ Contributors
+
+- CodiHaus <contact@codihaus.com>
+- Hoang-Cdh
+
+## v0.0.9
+
+[compare changes](https://github.com/codihaus/directus-extension-kanboard/compare/v0.0.8...v0.0.9)
+
+### 🏡 Chore
+
+- **release:** V0.0.8 ([725c9f6](https://github.com/codihaus/directus-extension-kanboard/commit/725c9f6))
+- Build ([1251deb](https://github.com/codihaus/directus-extension-kanboard/commit/1251deb))
+
+### ❤️ Contributors
+
+- CodiHaus <contact@codihaus.com>
+
+## v0.0.8
+
+[compare changes](https://github.com/codihaus/directus-extension-kanboard/compare/v0.0.7...v0.0.8)
+
+### 🚀 Enhancements
+
+- 🔥  add tootip for button ([fba6f44](https://github.com/codihaus/directus-extension-kanboard/commit/fba6f44))
+
+### 🩹 Fixes
+
+- **card:** 🐛  The user card is not visible ([057bfc7](https://github.com/codihaus/directus-extension-kanboard/commit/057bfc7))
+- **card:** 🐛  The user card is not visible" ([583d394](https://github.com/codihaus/directus-extension-kanboard/commit/583d394))
+
+### 💅 Refactors
+
+- 🔥  Requied Field Add Group ([0c7d184](https://github.com/codihaus/directus-extension-kanboard/commit/0c7d184))
+- **card:** 🔥  ([a7f11ac](https://github.com/codihaus/directus-extension-kanboard/commit/a7f11ac))
+
+### 🏡 Chore
+
+- Build new version ([b47a747](https://github.com/codihaus/directus-extension-kanboard/commit/b47a747))
+- **release:** V0.0.7 ([18afc98](https://github.com/codihaus/directus-extension-kanboard/commit/18afc98))
+
+### 🎨 Styles
+
+- **card:** 🔥  styilng button when content/image is not displayed (Photo) ([07b05fa](https://github.com/codihaus/directus-extension-kanboard/commit/07b05fa))
+- 🔥  styling group ([7d44cc6](https://github.com/codihaus/directus-extension-kanboard/commit/7d44cc6))
+- **card:** 🔥  styling popup ([a7ee367](https://github.com/codihaus/directus-extension-kanboard/commit/a7ee367))
+- **card:** 🎨  styling popup ([aa650dc](https://github.com/codihaus/directus-extension-kanboard/commit/aa650dc))
+
+### ❤️ Contributors
+
+- Hoang-Cdh 
+- CodiHaus <contact@codihaus.com>
+
 ## v0.0.7
 
 [compare changes](https://github.com/codihaus/directus-extension-kanboard/compare/v0.0.6...v0.0.7)
