@@ -329,8 +329,8 @@ main {
     --v-button-background-color-hover: none;
     --v-button-background-color-active: none;
 }
-.button-header:hover{
-    --v-icon-color: var(--black);
+.button-header:hover {
+    --v-icon-color: var(--theme--foreground);
 }
 .list-menu-item {
     cursor: pointer;

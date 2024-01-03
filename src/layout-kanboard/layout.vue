@@ -47,8 +47,13 @@
 					{{ editDialogOpen === '+' ? t('layouts.kanban.add_group') : t('layouts.kanban.edit_group') }}
 				</v-card-title>
 				<v-card-text>
-					<v-input v-model="editTitle" :placeholder="t('layouts.kanban.add_group_placeholder')" @blur="checkRequiredCreateGroup"/>
-					<span v-if="showErrorCreateGroup" class="text-14px text-[var(--theme--danger)]">Need to enter the group's title</span>
+					<v-input v-model="editTitle" :placeholder="t('layouts.kanban.add_group_placeholder')" @blur="checkRequiredTitle"/>
+					<span v-if="showRequiredTitleGroup" class="text-14px text-[var(--theme--danger)]">Need to enter the group's title</span>
+				</v-card-text>
+				<v-card-text>
+					<v-input v-model="editValue" :placeholder="t('kanboard.layout.add_value_group_placeholder')" @blur="checkRequiredValue"/>
+					<span v-if="showRequiredValueGroup" class="text-14px text-[var(--theme--danger)]">Need to enter the group's id</span>
+					<span v-if="showRequiredIdDuplicate" class="text-14px text-[var(--theme--danger)]">Id already exists</span>
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="cancelChanges()">{{ t('cancel') }}</v-button>
@@ -97,10 +102,14 @@
 			title="CHANGE LOG"
 			subtitle="Card's log"
 			@cancel="openChangeLog = false"
+			class="w-256px customer"
 		>
 			<div v-for="item, index in listRevisions" :key="index" class="item-change-log" @click="handleOpenChangeLogDetail(item, index)">
 				<div class="w-40px h-40px">
-					<v-image v-if="item?.activity?.user?.avatar" class="render-thumbnail" :src="partImage(item?.activity?.user?.avatar)" />
+					<div v-if="item?.dataUserUpdate?.avatar || item?.activity?.user?.avatar" class="w-100% h-100%">
+						<v-image v-if="item?.activity?.action === 'update'" class="render-thumbnail" :src="partImage(item?.dataUserUpdate?.avatar)" />
+						<v-image v-if="item?.activity?.action === 'create'" class="render-thumbnail" :src="partImage(item?.activity?.user?.avatar)" />
+					</div>
 					<div v-else class="w-100% h-100% rounded-full bg-slate-200"></div>
 				</div>
 				<div class="ml-12px">
@@ -109,7 +118,7 @@
 						<span v-if="item?.activity?.action === 'update'"> Update Item</span>
 						<span v-if="item?.activity?.action === 'create'"> Create Item</span>
 					</div>
-					<div class="flex items-center text-12px font-400 mt-8px leading-18px">
+					<div class="flex items-center text-12px font-400 leading-18px">
 						<v-icon name="nest_clock_farsight_analog" />
 						<span class="ml-4px">{{ formatDateTime(item?.activity?.timestamp) }}</span>
 					</div>
@@ -154,7 +163,7 @@
 <script setup lang="ts">
 import { useCollection, useApi, useSync } from "@directus/extensions-sdk";
 import { Field, Filter, Item } from "@directus/types";
-import { ref, computed, defineComponent, PropType, toRefs, defineOptions } from "vue";
+import { ref, computed, defineComponent, PropType, toRefs, defineOptions, inject } from "vue";
 import { useI18n } from 'vue-i18n';
 import Group from "./components/group.vue";
 import { LayoutOptions } from "./types";
@@ -208,13 +217,24 @@ const { t } = useI18n();
 const api = useApi();
 const editDialogOpen = ref<string | number | null>(null);
 const editTitle = ref('');
+const editValue = ref('')
 function openEditGroup(group: Group) {
+	console.log('group',group);
+	
 	editDialogOpen.value = group.id;
 	editTitle.value = group.title;
+	editValue.value = group.id
 }
+const showRequiredTitleGroup = ref(false)
+const showRequiredValueGroup = ref(false)
+const showRequiredIdDuplicate = ref(false)
 function cancelChanges() {
 	editDialogOpen.value = null;
 	editTitle.value = '';
+	editValue.value = '';
+	showRequiredTitleGroup.value = false
+	showRequiredValueGroup.value = false
+	showRequiredIdDuplicate.value = false
 }
 
 const isOpenDialogConfirmDeleteGroup = ref(false)
@@ -244,32 +264,48 @@ function handleConfirmDeleteGroup() {
 	isOpenDialogConfirmDeleteGroup.value = false
 	
 }
-const showErrorCreateGroup = ref(false)
 
-function checkRequiredCreateGroup() {
+function checkRequiredTitle() {
 	if(editTitle.value) {
-		showErrorCreateGroup.value = false
+		showRequiredTitleGroup.value = false
 	}
 	else {
-		showErrorCreateGroup.value = true
+		showRequiredTitleGroup.value = true
 	}
-	console.log('showErrorCreateGroup.value',showErrorCreateGroup.value);
-	console.log('editTitle',editTitle.value);
-	
-	
+}
+
+function checkRequiredValue() {
+	if(editValue.value) {
+		showRequiredValueGroup.value = false
+	}
+	else {
+		showRequiredValueGroup.value = true
+	}
 }
 
 function saveChanges() {
+	const isIdDuplicate  = props?.groupedItems.some(obj => obj.id === editValue.value)	
 	if(!editTitle.value) {
-		showErrorCreateGroup.value = true
-	}else {
+		showRequiredTitleGroup.value = true
+	}
+	else if (!editValue.value) {
+		showRequiredValueGroup.value = true
+	}
+	else if (isIdDuplicate) {
+		showRequiredIdDuplicate.value = true
+	}
+	else {
 		if (editDialogOpen.value === '+') {
-			props.addGroup(editTitle.value);
+			props.addGroup(editTitle.value, editValue.value);
 		} else if (editDialogOpen.value) {
-			props.editGroup(editDialogOpen.value, editTitle.value);
+			props.editGroup(editDialogOpen.value, editTitle.value, editValue.value);
 		}
 		editDialogOpen.value = null;
 		editTitle.value = '';
+		editValue.value = '';
+		showRequiredTitleGroup.value = false
+		showRequiredValueGroup.value = false
+		showRequiredIdDuplicate.value = false
 	}
 }
 const openDrawerCreateItem = ref(false)
@@ -277,7 +313,6 @@ const openDrawerItemEdit = ref(false)
 const reloadGroup = ref(false)
 const edits = ref({});
 function handleOpenDrawerCreateItem (fieldValue: string) {
-
 	edits.value = {
 		[field.value.field]: fieldValue,
 	}
@@ -352,6 +387,18 @@ async function handleOpenDrawerChangeLog (item: Item) {
         }
     })
 	listRevisions.value = res.data.data
+	listRevisions.value.map(async (e) => {
+		if(e?.data?.user_updated) {
+			const resUserUpdate = await api.get(`users/${e?.data?.user_updated}`, {
+				params: {
+					fields: ['avatar'],
+				}
+			})
+			e['dataUserUpdate'] = resUserUpdate.data.data
+			
+		}	
+	})
+	console.log('listRevisions.value',listRevisions.value);
 	openChangeLog.value = true
 	
 }
@@ -388,7 +435,6 @@ function handleOpenChangeLogDetail(item, index) {
 			}
 		}
 	}
-
 	detailRevisionDataChange.value = differences
 	openChangeLogDetail.value = true
 }
@@ -481,14 +527,10 @@ const choices = computed<{ text: string }[]>(
 	background: var(--purple-10);
 	opacity: 0.5;
 }
-.item-change-log:first-child {
-	margin-top: 0;
-}
 .item-change-log {
 	--v-icon-size: 15px;
 	display: flex;
-	margin-top: 20px;
-	padding: 0 40px;
+	padding: 10px 40px;
 }
 .item-change-log:hover {
 	background-color: var(--blue-10);
@@ -533,4 +575,5 @@ const choices = computed<{ text: string }[]>(
     --v-button-background-color-hover: var(--danger-125);
     --v-button-background-color-active: var(--theme--danger);
 }
+
 </style>
