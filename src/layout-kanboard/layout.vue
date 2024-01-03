@@ -47,8 +47,13 @@
 					{{ editDialogOpen === '+' ? t('layouts.kanban.add_group') : t('layouts.kanban.edit_group') }}
 				</v-card-title>
 				<v-card-text>
-					<v-input v-model="editTitle" :placeholder="t('layouts.kanban.add_group_placeholder')" @blur="checkRequiredCreateGroup"/>
-					<span v-if="showErrorCreateGroup" class="text-14px text-[var(--theme--danger)]">Need to enter the group's title</span>
+					<v-input v-model="editTitle" :placeholder="t('layouts.kanban.add_group_placeholder')" @blur="checkRequiredTitle"/>
+					<span v-if="showRequiredTitleGroup" class="text-14px text-[var(--theme--danger)]">Need to enter the group's title</span>
+				</v-card-text>
+				<v-card-text>
+					<v-input v-model="editValue" :placeholder="t('kanboard.layout.add_value_group_placeholder')" @blur="checkRequiredValue"/>
+					<span v-if="showRequiredValueGroup" class="text-14px text-[var(--theme--danger)]">Need to enter the group's id</span>
+					<span v-if="showRequiredIdDuplicate" class="text-14px text-[var(--theme--danger)]">Id already exists</span>
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="cancelChanges()">{{ t('cancel') }}</v-button>
@@ -97,6 +102,7 @@
 			title="CHANGE LOG"
 			subtitle="Card's log"
 			@cancel="openChangeLog = false"
+			class="w-256px customer"
 		>
 			<div v-for="item, index in listRevisions" :key="index" class="item-change-log" @click="handleOpenChangeLogDetail(item, index)">
 				<div class="w-40px h-40px">
@@ -157,7 +163,7 @@
 <script setup lang="ts">
 import { useCollection, useApi, useSync } from "@directus/extensions-sdk";
 import { Field, Filter, Item } from "@directus/types";
-import { ref, computed, defineComponent, PropType, toRefs, defineOptions } from "vue";
+import { ref, computed, defineComponent, PropType, toRefs, defineOptions, inject } from "vue";
 import { useI18n } from 'vue-i18n';
 import Group from "./components/group.vue";
 import { LayoutOptions } from "./types";
@@ -211,13 +217,24 @@ const { t } = useI18n();
 const api = useApi();
 const editDialogOpen = ref<string | number | null>(null);
 const editTitle = ref('');
+const editValue = ref('')
 function openEditGroup(group: Group) {
+	console.log('group',group);
+	
 	editDialogOpen.value = group.id;
 	editTitle.value = group.title;
+	editValue.value = group.id
 }
+const showRequiredTitleGroup = ref(false)
+const showRequiredValueGroup = ref(false)
+const showRequiredIdDuplicate = ref(false)
 function cancelChanges() {
 	editDialogOpen.value = null;
 	editTitle.value = '';
+	editValue.value = '';
+	showRequiredTitleGroup.value = false
+	showRequiredValueGroup.value = false
+	showRequiredIdDuplicate.value = false
 }
 
 const isOpenDialogConfirmDeleteGroup = ref(false)
@@ -247,28 +264,48 @@ function handleConfirmDeleteGroup() {
 	isOpenDialogConfirmDeleteGroup.value = false
 	
 }
-const showErrorCreateGroup = ref(false)
 
-function checkRequiredCreateGroup() {
+function checkRequiredTitle() {
 	if(editTitle.value) {
-		showErrorCreateGroup.value = false
+		showRequiredTitleGroup.value = false
 	}
 	else {
-		showErrorCreateGroup.value = true
+		showRequiredTitleGroup.value = true
+	}
+}
+
+function checkRequiredValue() {
+	if(editValue.value) {
+		showRequiredValueGroup.value = false
+	}
+	else {
+		showRequiredValueGroup.value = true
 	}
 }
 
 function saveChanges() {
+	const isIdDuplicate  = props?.groupedItems.some(obj => obj.id === editValue.value)	
 	if(!editTitle.value) {
-		showErrorCreateGroup.value = true
-	}else {
+		showRequiredTitleGroup.value = true
+	}
+	else if (!editValue.value) {
+		showRequiredValueGroup.value = true
+	}
+	else if (isIdDuplicate) {
+		showRequiredIdDuplicate.value = true
+	}
+	else {
 		if (editDialogOpen.value === '+') {
-			props.addGroup(editTitle.value);
+			props.addGroup(editTitle.value, editValue.value);
 		} else if (editDialogOpen.value) {
-			props.editGroup(editDialogOpen.value, editTitle.value);
+			props.editGroup(editDialogOpen.value, editTitle.value, editValue.value);
 		}
 		editDialogOpen.value = null;
 		editTitle.value = '';
+		editValue.value = '';
+		showRequiredTitleGroup.value = false
+		showRequiredValueGroup.value = false
+		showRequiredIdDuplicate.value = false
 	}
 }
 const openDrawerCreateItem = ref(false)
@@ -276,7 +313,6 @@ const openDrawerItemEdit = ref(false)
 const reloadGroup = ref(false)
 const edits = ref({});
 function handleOpenDrawerCreateItem (fieldValue: string) {
-
 	edits.value = {
 		[field.value.field]: fieldValue,
 	}
@@ -539,4 +575,5 @@ const choices = computed<{ text: string }[]>(
     --v-button-background-color-hover: var(--danger-125);
     --v-button-background-color-active: var(--theme--danger);
 }
+
 </style>
