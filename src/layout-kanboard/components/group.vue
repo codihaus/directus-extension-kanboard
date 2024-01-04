@@ -58,7 +58,7 @@
                         :open-change-log="openChangeLog"
                         :open-drawer-item-edit="openDrawerItemEdit"
                         @click="handleEditItem(element ,index)"
-                        @delete-item="handleDeleteItem(index)"
+                        @delete-item="handleDeleteItem(element)"
                         @edit-item="handleEditItem(element ,index)"
                         @open-change-log="$emit('openChangeLog', element)"
                     />
@@ -102,6 +102,7 @@ interface Props {
 	isRefresh?: boolean;
     openChangeLog?: boolean;
     openDrawerItemEdit?: boolean;
+    valueIdDeleteGroup?: string;
     newItemData?: object
 	groupCollection?: string | null;
 	groupedItems?: Group[];
@@ -115,7 +116,7 @@ interface Props {
 	sortField?: string | null;
 	userField?: string | null;
 	groupsSortField?: string | null;
-    reloadGroup?: boolean | false;
+    statusDeleteGroup?: boolean | false;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -184,8 +185,6 @@ watch([filter, sort, search], (after, before) => {
 const page = ref(1);
 const limit = ref(5);
 
-
-
 const { items, totalPages, changeManualSort, getItems, getItemCount  } = useItems(collectionKey, {
     limit,
     sort,
@@ -204,7 +203,7 @@ interface EndEvent extends CustomEvent {
 }
 
 async function change(event, group) {
-
+    
     const pkField = primaryKeyField.value?.field;
 
     let item: string | number | undefined = undefined
@@ -252,7 +251,6 @@ async function change(event, group) {
         sort.value = sort.value
     }
 }
-
 watch(()=> props.newItemData, () => {
     let data = items.value
     let editItem = false
@@ -268,7 +266,6 @@ watch(()=> props.newItemData, () => {
     items.value = data
     getItemCount();
 })
-
 function handleCreateItem() {
     emit('createItem', fieldValue)
 }
@@ -282,12 +279,41 @@ function handleDeleteItem (index: number) {
 function handleEditItem (item: Item, index: number) {
     emit('editItem',items.value, item, index)
 }
-const isArrayCard = ref([])
-const indexGroup = ref(null)
-const data = ref([])
-function handleDeleteGroup() {
+const isArrayCard = ref({})
+function handleDeleteGroup(element: any) {
     emit('deleteGroup')
+    isArrayCard.value = {title: props.fieldValue, value: items.value }
+    console.log('isArrayCard.value',isArrayCard.value);
 }
+watch(() => props.statusDeleteGroup, async (newValue) => {
+    if(newValue) {
+        if(isArrayCard.value.title === props.valueIdDeleteGroup) {
+            isArrayCard.value.value.map((e) => {
+                e.status = 'draft'
+            })
+            await api.patch(`items/${collectionKey.value}`, isArrayCard.value.value);
+        }
+        const res = await api.get(`items/${collectionKey.value}`, {
+            params: {
+                imit: 5,
+                fields: ['*'],
+                filter: {
+                    _and:[
+                        {
+                            status: {
+                                _eq: 'draft',
+                            },
+                        }
+                    ]
+                }
+            }
+        });
+        if(res.data.data) {
+            getItems()
+        }
+    }
+})
+
 </script>
 <style scoped>
 section {

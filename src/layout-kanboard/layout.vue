@@ -24,10 +24,11 @@
 					:sort="sort"
 					:class="{ draggable: group.id !== null }"
 					:primary-key-field="primaryKeyField"
-					:reloadGroup="reloadGroup"
+					:status-delete-group="isStatusDeleteGroup"
+					:value-id-delete-group="valueIdDeleteGroup"
 					:open-change-log="openChangeLog"
 					:open-drawer-item-edit="openDrawerItemEdit"
-					:new-item-data="dataItemCreated"
+					:new-item-data="newItemData"
 					@create-item="handleOpenDrawerCreateItem"
 					@edit-item="handleOpenDrawerEditItem"
 					@open-change-log="handleOpenDrawerChangeLog"
@@ -239,26 +240,17 @@ function cancelChanges() {
 
 const isOpenDialogConfirmDeleteGroup = ref(false)
 const valueIdDeleteGroup = ref(null)
+const isStatusDeleteGroup = ref(false)
 function handDeleteGroup(id: string) {
 	isOpenDialogConfirmDeleteGroup.value = true
 	valueIdDeleteGroup.value = id
+	isStatusDeleteGroup.value = false
 }
 function cancelDeleteGroup() {
 	isOpenDialogConfirmDeleteGroup.value = false
 }
 function handleConfirmDeleteGroup() {
-	try {
-		props.deleteGroup(valueIdDeleteGroup.value);
-		notify({
-            title: `${valueIdDeleteGroup.value} has been deleted`
-        });
-		isDeletedGroup.value = true
-	}catch(error) {
-		notify({
-			type: 'error',
-            title: error
-        });
-	}
+	isStatusDeleteGroup.value = true
 	props.deleteGroup(valueIdDeleteGroup.value);
 	isOpenDialogConfirmDeleteGroup.value = false
 }
@@ -308,7 +300,6 @@ function saveChanges() {
 }
 const openDrawerCreateItem = ref(false)
 const openDrawerItemEdit = ref(false)
-const reloadGroup = ref(false)
 const edits = ref({});
 function handleOpenDrawerCreateItem (fieldValue: string) {
 	edits.value = {
@@ -317,15 +308,13 @@ function handleOpenDrawerCreateItem (fieldValue: string) {
 	
 	openDrawerCreateItem.value = true
 }
-const dataItemCreated = ref({})
+const newItemData = ref({})
 async function handleCreateItem(data: any) {
 	
 	if (!data) return;
 	try {
-		reloadGroup.value = false;
 		const res = await api.post(`/items/${collectionKey.value}`, data);
-		dataItemCreated.value = res.data.data
-		reloadGroup.value = true;
+		newItemData.value = res.data.data
 		notify({
             title: `Successfully created ${data.title} item`
         });
@@ -473,10 +462,8 @@ async function handleEditItem(data: any) {
 	}
 	else {
 		try {
-			reloadGroup.value = false;
 			const res = await api.patch(`/items/${collectionKey.value}/${edits.value.id}`, dataEdit);
-			dataItemCreated.value = res.data.data
-			reloadGroup.value = true;
+			newItemData.value = res.data.data
 			openDrawerItemEdit.value = false;
 			notify({
 				title: `${edits.value.title} has been successfully edited`

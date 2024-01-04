@@ -8,6 +8,7 @@ import { addTokenToURL } from '../shared/utils/add-token-to-url';
 import LayoutComponent from './layout.vue';
 import Options from "./options.vue";
 import enUS from "../lang/en-US.yaml"
+import { notify } from '../share/utils/notify';
 
 
 export default defineLayout({
@@ -375,18 +376,25 @@ export default defineLayout({
 				if(isRelational.value) {
 					const pkField = primaryKeyField.value?.field;
 					if (pkField === undefined || !groupsCollection.value) return;
-
-					// items.value = items.value.filter((item) => item[pkField] !== id);
-
 					await api.delete(`${getEndpoint(groupsCollection.value)}/${id}`);
+			
 				}
 				else {
-					const updatedChoices = selectedGroup.value?.meta?.options?.choices.filter(item => item.value !== id)
-					await fieldsStore.updateField(selectedGroup.value.collection, selectedGroup.value.field, {
-						meta: { options: { choices: updatedChoices } },
-					});
+					try {
+						const updatedChoices = selectedGroup.value?.meta?.options?.choices.filter(item => item.value !== id)
+						await fieldsStore.updateField(selectedGroup.value.collection, selectedGroup.value.field, {
+							meta: { options: { choices: updatedChoices } },
+						});
+						notify({
+							title: `${id} has been deleted`
+						});
+					}catch(error) {
+						notify({
+							type: 'error',
+							title: error
+						});
+					}
 				}
-
 				await getGroups();
 			}
 
