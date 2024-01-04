@@ -1,3 +1,26 @@
 kanboard:
   layout:
     add_value_group_placeholder: Enter a new group id...
+    add_new_list: Add new list
+    required_title: Need to enter the group's title
+    required_value: Need to enter the group's id
+    id_already_exists: Id already exists
+  changelog:
+    text_update: Update Item
+    text_create: Create Item
+  card:
+    create_item: Create Item
+    edit_item: Edit Item
+    changelog: Changelog
+    delete_item: Delete Item
+  group:
+    edit_group: Edit Group
+    delete_group: Delete Group
+  popup_confirm:
+    title: Are you sure
+    text: Are you sure you want to Delete this card?. You can’t undo this action
+  button:
+    cancel: Cancel
+    delete: Delete
+  option:
+    show_index: Show Index

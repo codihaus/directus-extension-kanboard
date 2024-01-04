@@ -165,7 +165,7 @@ const userFieldSync = useSync(props, 'userField', emit);
 				<v-checkbox v-model="cropSync" block :label="t('layouts.kanban.crop')" />
 			</div>
 		<div class="field">
-				<div class="type-label">{{ 'Show Index' }}</div>
+				<div class="type-label">{{ t('kanboard.option.show_index') }}</div>
 				<v-checkbox v-model="showIndexSync" block label="Show" />
 			</div>
 

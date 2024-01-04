@@ -10,7 +10,7 @@
                 <v-button 
                     class="button-header" 
                     @click="handleCreateItem"
-                    v-tooltip.bottom="'Create Item'"
+                    v-tooltip.bottom="t('kanboard.card.create_item')"
                     icon
                 >
                     <v-icon name="add" />
@@ -21,7 +21,7 @@
                             class="button-header"
                             :class="{ active }"
                             @click="toggle"
-                            v-tooltip.bottom="'Edit Group'" 
+                            v-tooltip.bottom="t('kanboard.group.edit_group')" 
                             icon
                         >
                             <v-icon name="more_vert" />
@@ -29,11 +29,11 @@
                     </template>
                     <v-list @click="emit('editGroup')" class="hover:text-[var(--project-color)] list-menu-item">
                         <v-icon name="edit" class="icon-menu"/> 
-                        <span class="text-14px ml-5px">Edit Group</span>
+                        <span class="text-14px ml-5px">{{ t('kanboard.group.edit_group') }}</span>
                     </v-list>
                     <v-list @click="handleDeleteGroup" class="hover:text-[var(--theme--danger)] list-menu-item">
                         <v-icon name="delete" class="icon-menu"/> 
-                        <span class="text-14px ml-5px">Delete Group</span>
+                        <span class="text-14px ml-5px">{{ t('kanboard.group.delete_group') }}</span>
                     </v-list>
                 </v-menu>
             </div>
@@ -86,6 +86,7 @@ import { Field, Filter, LogicalFilterAND } from "@directus/types";
 import { LayoutOptions } from "../types";
 import Draggable from "vuedraggable";
 import Card from "./card.vue";
+import { useI18n } from 'vue-i18n';
 interface Props {
 	layoutOptions?: LayoutOptions;
 	collection: string;
@@ -158,6 +159,7 @@ const {
     layoutOptions,
 } = toRefs(props);
 
+const { t } = useI18n();
 const api = useApi()
 const collection = useCollection(collectionKey)
 
