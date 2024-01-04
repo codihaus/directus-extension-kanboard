@@ -299,6 +299,7 @@ section {
 
 header {
     padding: 16px;
+    padding-top: 0;
     display: flex;
     justify-content: space-between;
 }
@@ -312,7 +313,7 @@ main {
 }
 .cards {
     padding: 16px;
-    gap: 10px;
+    gap: 15px;
     display: flex;
     flex-flow: column nowrap;
     flex-grow: 1;
