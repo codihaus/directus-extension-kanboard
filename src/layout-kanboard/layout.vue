@@ -39,7 +39,7 @@
 		</draggable>
 		<div class="add-group" @click="editDialogOpen = '+'">
 			<v-icon name="add_box" />
-			<span class="ml-8px font-500 text-14px">Add new list</span>
+			<span class="ml-8px font-500 text-14px">{{ t('kanboard.layout.add_new_list') }}</span>
 		</div>
 		<v-dialog :model-value="editDialogOpen !== null" @esc="cancelChanges()">
 			<v-card>
@@ -48,12 +48,12 @@
 				</v-card-title>
 				<v-card-text>
 					<v-input v-model="editTitle" :placeholder="t('layouts.kanban.add_group_placeholder')" @blur="checkRequiredTitle"/>
-					<span v-if="showRequiredTitleGroup" class="text-14px text-[var(--theme--danger)]">Need to enter the group's title</span>
+					<span v-if="showRequiredTitleGroup" class="text-14px text-[var(--theme--danger)]">{{ t('kanboard.layouts.required_title') }}</span>
 				</v-card-text>
 				<v-card-text>
 					<v-input v-model="editValue" :placeholder="t('kanboard.layout.add_value_group_placeholder')" @blur="checkRequiredValue"/>
-					<span v-if="showRequiredValueGroup" class="text-14px text-[var(--theme--danger)]">Need to enter the group's id</span>
-					<span v-if="showRequiredIdDuplicate" class="text-14px text-[var(--theme--danger)]">Id already exists</span>
+					<span v-if="showRequiredValueGroup" class="text-14px text-[var(--theme--danger)]">{{ t('kanboard.layouts.required_value') }}</span>
+					<span v-if="showRequiredIdDuplicate" class="text-14px text-[var(--theme--danger)]">{{ t('kanboard.layouts.id_already_exists') }}</span>
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="cancelChanges()">{{ t('cancel') }}</v-button>
@@ -115,8 +115,8 @@
 				<div class="ml-12px">
 					<div class="text-14px font-400">
 						<span class="font-700">{{ item?.activity?.user?.email }}</span>
-						<span v-if="item?.activity?.action === 'update'"> Update Item</span>
-						<span v-if="item?.activity?.action === 'create'"> Create Item</span>
+						<span v-if="item?.activity?.action === 'update'"> {{ t('kanboard.changelog.text_update') }} </span>
+						<span v-if="item?.activity?.action === 'create'"> {{ t('kanboard.changelog.text_create') }} </span>
 					</div>
 					<div class="flex items-center text-12px font-400 leading-18px">
 						<v-icon name="nest_clock_farsight_analog" />
@@ -144,13 +144,13 @@
 		<v-dialog :model-value="isOpenDialogConfirmDeleteGroup" @esc="cancelDeleteGroup()">
             <div class="confirm-delete">
                 <v-card>
-                    <v-card-title>Are you sure</v-card-title>
+                    <v-card-title> {{ t('kanboard.popup_confirm.title') }} </v-card-title>
                     <v-card-text>
-                        Are you sure you want to Delete this group?. You can’t undo this action
+						{{ t('kanboard.popup_confirm.text') }}
                     </v-card-text>
                     <v-card-actions>
-                        <v-button secondary @click="cancelDeleteGroup()">Cancel</v-button>
-                        <v-button class="button-confirm-delete" @click="handleConfirmDeleteGroup">Delete</v-button>
+                        <v-button secondary @click="cancelDeleteGroup()">{{ t('kanboard.button.cancel') }}</v-button>
+                        <v-button class="button-confirm-delete" @click="handleConfirmDeleteGroup">{{ t('kanboard.button.delete') }}</v-button>
                     </v-card-actions>
                 </v-card>
             </div>

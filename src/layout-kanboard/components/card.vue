@@ -26,13 +26,13 @@
                         </v-button>
                     </template>
                     <v-list @click.stop="handleEditItem" class="list-menu-item">
-                        <span class="text-14px">Edit Item</span>
+                        <span class="text-14px">{{ t('kanboard.card.edit_item') }}</span>
                     </v-list>
                     <v-list @click.stop="handleChangLogItem" class="list-menu-item">
-                        <span class="text-14px">Changelog</span>
+                        <span class="text-14px">{{ t('kanboard.card.changelog') }}</span>
                     </v-list>
                     <v-list @click.stop="handleDeleteItem" class="list-menu-item">
-                        <span class="text-14px">Delete Item</span>
+                        <span class="text-14px">{{ t('kanboard.card.delete_item') }}</span>
                     </v-list>
                 </v-menu>
         </header>
@@ -53,13 +53,13 @@
         <v-dialog :model-value="isOpenConfirmDialog" @esc="cancelChanges()">
             <div class="confirm-delete">
                 <v-card>
-                    <v-card-title>Are you sure</v-card-title>
+                    <v-card-title>{{ t('kanboard.popup_confirm.title') }}</v-card-title>
                     <v-card-text>
-                        Are you sure you want to Delete this card?. You can’t undo this action
+                        {{ t('kanboard.popup_confirm.text') }}
                     </v-card-text>
                     <v-card-actions>
-                        <v-button secondary @click="cancelChanges()">Cancel</v-button>
-                        <v-button class="button-confirm-delete" @click="handleConfirmDelete(item)">Delete</v-button>
+                        <v-button secondary @click="cancelChanges()">{{ t('kanboard.button.cancel') }}</v-button>
+                        <v-button class="button-confirm-delete" @click="handleConfirmDelete(item)">{{ t('kanboard.button.delete') }}</v-button>
                     </v-card-actions>
                 </v-card>
             </div>
@@ -73,6 +73,7 @@ import { Filter } from "@directus/types";
 import { LayoutOptions } from '../types';
 import { ref } from "vue";
 import { useApi } from '@directus/extensions-sdk';
+import { useI18n } from 'vue-i18n';
 import { partImage } from '../../share/utils/part-image'
 import { notify } from '../../share/utils/notify';
 interface Props {
@@ -90,6 +91,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
 	layoutOptions: {},
 });
+const { t } = useI18n();
 const api = useApi();
 
 const emit = defineEmits([
