@@ -144,6 +144,7 @@ export default defineLayout({
 			const groupTitleField = groupTitle?.value || groupsCollectionPrimaryKeyField;
 			
 			const group = groupField.value;
+			
 			const pkField = primaryKeyField.value?.field;
 			const itemGroups: Record<string | number, Group> = {};
 
@@ -231,12 +232,15 @@ export default defineLayout({
 			const imageSource = createViewOption<string | null>('imageSource', fieldGroups.value.file[0]?.field ?? null);
 			const crop = createViewOption<boolean>('crop', true);
 
-			const selectedGroup = computed(() => fieldGroups.value.group.find((group) => group.field === groupField.value));
+			console.log('groupField',groupField);
+			console.log('fieldGroups.value.group[0]?.field',fieldGroups.value.group[0]?.field);
 
+			
+			const selectedGroup = computed(() => fieldGroups.value.group.find((group) => group.field === groupField.value));
 			watch(groupField, () => {
 				groupTitle.value = null;
 			});
-
+			
 			const userFieldJunction = computed(() => {
 				if (userField.value === null) return;
 
@@ -271,7 +275,8 @@ export default defineLayout({
 				userFieldType,
 			};
 
-			function createViewOption<T>(key: keyof LayoutOptions, defaultValue: any) {
+
+			function createViewOption<T>(key: keyof defaultOptions, defaultValue: any) {
 				return computed<T>({
 					get() {
 						return layoutOptions.value?.[key] !== undefined ? layoutOptions.value[key] : defaultValue;
@@ -567,7 +572,9 @@ export default defineLayout({
 
 			return { sort, limit, page, fields };
 		}
-
+		
+		console.log('groupField',groupField);
+		
 		return {
 			isRelational,
 			groupedItems,

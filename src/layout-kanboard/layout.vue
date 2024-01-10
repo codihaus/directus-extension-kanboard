@@ -21,7 +21,6 @@
 					:layout-options="layoutOptions"
 					:filter="filter"
 					:search="search"
-					:sort="sort"
 					:class="{ draggable: group.id !== null }"
 					:primary-key-field="primaryKeyField"
 					:status-delete-group="isStatusDeleteGroup"
@@ -164,7 +163,7 @@
 <script setup lang="ts">
 import { useCollection, useApi, useSync } from "@directus/extensions-sdk";
 import { Field, Filter, Item } from "@directus/types";
-import { ref, computed, defineComponent, PropType, toRefs, defineOptions, inject } from "vue";
+import { ref, computed, defineComponent, PropType, toRefs, defineOptions, inject, watch } from "vue";
 import { useI18n } from 'vue-i18n';
 import Group from "./components/group.vue";
 import { LayoutOptions } from "./types";
@@ -220,8 +219,6 @@ const editDialogOpen = ref<string | number | null>(null);
 const editTitle = ref('');
 const editValue = ref('')
 function openEditGroup(group: Group) {
-	console.log('group',group);
-	
 	editDialogOpen.value = group.id;
 	editTitle.value = group.title;
 	editValue.value = group.id
@@ -353,7 +350,7 @@ function handleOpenDrawerEditItem(items: Array, item: Object, index: Number) {
 	Object.keys(item).forEach((key) => {
 		edits.value[key] = item[key];
 	});
-
+	
 	openDrawerItemEdit.value = true
 }
 const openChangeLog = ref(false)
@@ -480,9 +477,25 @@ const collection = useCollection(collectionKey);
 
 const field = computed<Field | undefined>(() =>
 	collection.fields.value.find(
-		(f) => f.field == layoutOptions.value?.groupField
+		(f) => f.field == layoutOptions.value?.groupField ?? 'status'
 	)
 );
+function checkLayoutOption() {
+	if(!layoutOptions) return
+
+	const keysToCheck = ['groupField', 'titleField' ,'textField'];
+	keysToCheck.forEach(key => {
+		if(!layoutOptions.value.hasOwnProperty(key)) {
+			layoutOptions.value[key] = 'status'
+		}
+	})
+	console.log('layoutOptions',layoutOptions.value);
+	
+
+
+}
+checkLayoutOption()
+
 const choices = computed<{ text: string }[]>(
 	() => field.value?.meta?.options?.choices || []
 );

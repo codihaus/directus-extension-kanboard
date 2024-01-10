@@ -97,8 +97,8 @@ interface Props {
 	limit?: number | null;
 	sort?: string | null;
 	totalPages?: number | null;
-	field?: string | null;
-	fieldValue: string | null;
+	field?: object | null;
+	fieldValue: string | number | null;
 	isRefresh?: boolean;
     openChangeLog?: boolean;
     openDrawerItemEdit?: boolean;
@@ -108,10 +108,6 @@ interface Props {
 	groupedItems?: Group[];
 	groupTitle?: string | null;
     groupIndex?: number | null;
-	changeGroupSort: (event: ChangeEvent<Group>) => void;
-	addGroup: (title: string) => Promise<void>;
-	editGroup: (id: string | number, title: string) => Promise<void>;
-	deleteGroup: (id: string | number) => Promise<void>;
 	isRelational?: boolean;
 	sortField?: string | null;
 	userField?: string | null;
@@ -149,6 +145,7 @@ const emit = defineEmits([
     'editGroup'
 ])
 const valueOpenEditGroupTitle = ref(false)
+
 const {
     primaryKeyField,
     fieldValue,
@@ -173,6 +170,7 @@ const filter = computed<LogicalFilterAND>(() => ({
         { [field.value.field]: { _eq: fieldValue.value } },
     ],
 }));
+
 
 // const sort = computed(() => layoutOptions.value?.sort);
 
