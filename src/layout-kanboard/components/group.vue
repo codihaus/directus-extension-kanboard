@@ -97,7 +97,7 @@ interface Props {
 	limit?: number | null;
 	sort?: string | null;
 	totalPages?: number | null;
-	field?: object | null;
+	field?: string | object | null;
 	fieldValue: string | number | null;
 	isRefresh?: boolean;
     openChangeLog?: boolean;
