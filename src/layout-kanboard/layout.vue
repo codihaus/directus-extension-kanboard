@@ -477,24 +477,9 @@ const collection = useCollection(collectionKey);
 
 const field = computed<Field | undefined>(() =>
 	collection.fields.value.find(
-		(f) => f.field == layoutOptions.value?.groupField ?? 'status'
+		(f) => f.field == layoutOptions.value?.groupField
 	)
 );
-function checkLayoutOption() {
-	if(!layoutOptions) return
-
-	const keysToCheck = ['groupField', 'titleField' ,'textField'];
-	keysToCheck.forEach(key => {
-		if(!layoutOptions.value.hasOwnProperty(key)) {
-			layoutOptions.value[key] = 'status'
-		}
-	})
-	console.log('layoutOptions',layoutOptions.value);
-	
-
-
-}
-checkLayoutOption()
 
 const choices = computed<{ text: string }[]>(
 	() => field.value?.meta?.options?.choices || []

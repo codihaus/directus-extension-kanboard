@@ -232,9 +232,6 @@ export default defineLayout({
 			const imageSource = createViewOption<string | null>('imageSource', fieldGroups.value.file[0]?.field ?? null);
 			const crop = createViewOption<boolean>('crop', true);
 
-			console.log('groupField',groupField);
-			console.log('fieldGroups.value.group[0]?.field',fieldGroups.value.group[0]?.field);
-
 			
 			const selectedGroup = computed(() => fieldGroups.value.group.find((group) => group.field === groupField.value));
 			watch(groupField, () => {
@@ -256,6 +253,19 @@ export default defineLayout({
 				if (userField.value === null) return;
 				return userFieldJunction.value !== undefined ? 'm2m' : 'm2o';
 			});
+
+			function checkLayoutOption() {
+				if(!layoutOptions) return
+			
+				const keysToCheck = ['groupField', 'titleField' ,'textField'];
+				keysToCheck.forEach(key => {
+					if(!layoutOptions.value.hasOwnProperty(key)) {
+						layoutOptions.value[key] = 'status'
+					}
+				})
+			
+			}
+			checkLayoutOption()
 
 			return {
 				groupField,
@@ -572,8 +582,6 @@ export default defineLayout({
 
 			return { sort, limit, page, fields };
 		}
-		
-		console.log('groupField',groupField);
 		
 		return {
 			isRelational,
